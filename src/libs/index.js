@@ -4,7 +4,7 @@ import DialogComponent from './Dialog.vue'
 import { removeNode } from './utils'
 
 const chain = new Chain()
-let multiple = false
+let multiple = true
 let queue = []
 
 let zIndex = 999
@@ -21,6 +21,7 @@ function createInstance () {
       el: document.createElement('div')
     })
     document.body.appendChild(instance.$el)
+
     instance.$on('input', value => {
       instance.value = value
     })
@@ -34,10 +35,7 @@ function createInstance () {
 function Dialog (options) {
   return new Promise((resolve, reject) => {
     const instance = createInstance()
-
-    const dialogComponent = Dialog.components.find(item => item.key === options.key)?.component
-
-    options.clear = (result) => {
+    instance.clear = (result) => {
       if (multiple) {
         instance.$on('closed', () => {
           queue = queue.filter(item => item !== instance)
@@ -50,40 +48,24 @@ function Dialog (options) {
       instance.resolve({ ...result, options })
     }
 
-    zIndex = zIndex + 10
+    zIndex += 10
 
-    Object.assign(instance, Dialog.currentOptions, { zIndex }, options, { dialogComponent }, { resolve, reject })
+    Object.assign(instance, Dialog.currentOptions, options, { zIndex, resolve, reject })
 
-    if (!dialogComponent) {
+    if (!options.content) {
       instance.value = false
-      instance.reject({
-        action: 'error',
-        message: '找不到对应弹窗组件，请检查传入的key是否有对应的组件'
-      })
+      instance.clear({ action: 'error', params: 'No content!' })
     }
   })
 }
 
 Dialog.defaultOptions = {
   value: true,
-  component: null,
   params: null,
   position: 'center',
   overlayStyle: null,
-  beforeClose: null,
-  callback (action, params) {
-    try {
-      this.clear({ action, params })
-    } catch (error) {
-      this.reject({
-        action: 'error',
-        params: JSON.stringify(error) || '未知错误'
-      })
-    }
-  }
+  beforeClose: null
 }
-
-Dialog.components = []
 
 Dialog.close = all => {
   if (queue.length) {
@@ -100,28 +82,6 @@ Dialog.close = all => {
       instance.clear(closeParams)
     }
   }
-}
-Dialog.closePromisify = Dialog.close
-
-/**
- * 添加
- * @param {*} params
- */
-Dialog.add = params => {
-  if (!Array.isArray(params) && !typeof params === 'function') {
-    throw new Error('params must be array or function')
-  }
-
-  const routes = Array.isArray(params) ? params : [params]
-
-  routes.forEach(element => {
-    const index = Dialog.components.findIndex(item => item.key === element.key)
-    if (index === -1) {
-      Dialog.components.push(element)
-    } else {
-      Dialog.components.splice(index, 1, element)
-    }
-  })
 }
 
 Dialog.allowMultiple = (value = true) => {

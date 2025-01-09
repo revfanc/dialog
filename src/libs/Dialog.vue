@@ -1,19 +1,15 @@
 <script>
+import { scrollLocker } from './scrollLocker'
+
 export default {
   name: 'DialogComponent',
   directives: {
     'popup-fixed': {
-      inserted () {
-        const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
-        document.body.style.cssText += `position: fixed; width: 100%; top: -${scrollTop}px;`
+      inserted (el) {
+        scrollLocker.lock(el)
       },
       unbind () {
-        const { body } = document
-        body.style.position = ''
-        const { top } = body.style
-        // eslint-disable-next-line no-multi-assign, radix
-        document.body.scrollTop = document.documentElement.scrollTop = -parseInt(top)
-        body.style.top = ''
+        scrollLocker.unlock()
       }
     }
   },
@@ -67,6 +63,7 @@ export default {
       if (this.beforeClose && action !== 'close') {
         this.beforeClose({
           params,
+          action,
           close: () => {
             this.handleAction(action, params)
           }
