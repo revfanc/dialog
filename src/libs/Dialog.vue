@@ -4,7 +4,7 @@ import { scrollLocker } from './scrollLocker'
 export default {
   name: 'DialogComponent',
   directives: {
-    'popup-fixed': {
+    locker: {
       inserted (el) {
         scrollLocker.lock(el)
       },
@@ -42,35 +42,27 @@ export default {
     beforeClose: {
       type: Function,
       default: null
-    },
-    callback: {
-      type: Function,
-      default: null
-    },
-    dialogComponent: {
-      type: Function,
-      default: null
     }
   },
   methods: {
-    handleAction (action = 'close', params = null) {
-      this.$emit('input', false)
-      if (this.callback) {
-        this.callback(action, params)
+    handleAction (...args) {
+      const [action, params] = args
+
+      const close = () => {
+        this.$emit('input', false)
+        this.clear(...args)
       }
-    },
-    onAction (action = 'close', params = null) {
+
       if (this.beforeClose && action !== 'close') {
         this.beforeClose({
           params,
           action,
-          close: () => {
-            this.handleAction(action, params)
-          }
+          close
         })
         return
       }
-      this.handleAction(action, params)
+
+      close()
     }
   },
   render () {
@@ -85,12 +77,8 @@ export default {
         </transition>
         <transition name={this.position}>
           {this.value ? (
-            <div class={['dialog-content', `dialog-content--${this.position}`]} vPopupFixed style={{ zIndex: this.zIndex + 1 }}>
-              <this.dialogComponent
-                params={this.params}
-                position={this.position}
-                onAction={this.onAction}
-              />
+            <div class={['dialog-content', `dialog-content--${this.position}`]} vLocker style={{ zIndex: this.zIndex + 1 }}>
+              <slot params={this.params} onAction={this.handleAction}></slot>
             </div>
           ) : null}
         </transition>
@@ -109,6 +97,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.75);
   z-index: 999;
 }
+
 .dialog-content {
   width: 375px;
   //height: 100vh;
@@ -120,11 +109,13 @@ export default {
   justify-content: center;
   flex-direction: column;
 }
+
 .dialog-content--center {
   top: 50%;
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
 }
+
 .dialog-content--bottom {
   justify-content: flex-end;
   bottom: 0;
@@ -142,23 +133,28 @@ export default {
 .fade-leave-active {
   transition: all 0.3s;
 }
+
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
 }
+
 .center-enter-active,
 .center-leave-active {
   transition: all 0.3s;
 }
+
 .center-enter,
 .center-leave-to {
   opacity: 0.1;
   transform: translate3d(-50%, -50%, 0) scale(0.7);
 }
+
 .bottom-enter-active,
 .bottom-leave-active {
   transition: all 0.3s;
 }
+
 .bottom-enter,
 .bottom-leave-to {
   opacity: 0.1;
@@ -169,6 +165,7 @@ export default {
 .top-leave-active {
   transition: all 0.3s;
 }
+
 .top-enter,
 .top-leave-to {
   opacity: 0.1;

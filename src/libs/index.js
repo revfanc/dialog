@@ -35,6 +35,11 @@ function createInstance () {
 function Dialog (options) {
   return new Promise((resolve, reject) => {
     const instance = createInstance()
+
+    if (options.content) {
+      instance.$slots.default = [options.content]
+    }
+
     instance.clear = (result) => {
       if (multiple) {
         instance.$on('closed', () => {
@@ -76,9 +81,9 @@ Dialog.close = all => {
       })
       queue = []
     } else if (!multiple) {
-      queue[0].clear(closeParams)
+      queue[queue.length - 1].clear(closeParams)
     } else {
-      const instance = queue.shift()
+      const instance = queue.pop()
       instance.clear(closeParams)
     }
   }
