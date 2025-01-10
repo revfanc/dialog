@@ -87,8 +87,6 @@ const createScrollLocker = () => {
     }
 
     lockCount++
-
-    console.log('lockCount :>> ', lockCount)
   }
 
   const unlock = el => {
@@ -104,8 +102,6 @@ const createScrollLocker = () => {
                     document.body.style.setProperty('overflow', '', 'important')
       }
     }
-
-    console.log('lockCount :>> ', lockCount)
   }
 
   return {
