@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Chain from './chain'
 import DialogComponent from './Dialog'
 import { removeNode } from './utils'
+import './index.css'
 
 const chain = new Chain()
 let multiple = true
@@ -36,11 +37,7 @@ function Dialog (options) {
   return new Promise((resolve, reject) => {
     const instance = createInstance()
 
-    if (options.content) {
-      instance.$slots.default = [options.content]
-    }
-
-    instance.clear = (result) => {
+    instance.clear = (...res) => {
       if (multiple) {
         instance.$on('closed', () => {
           queue = queue.filter(item => item !== instance)
@@ -50,7 +47,7 @@ function Dialog (options) {
         })
       }
       instance.value = false
-      instance.resolve({ ...result, options })
+      instance.resolve(...res, options)
     }
 
     zIndex += 10
@@ -59,7 +56,7 @@ function Dialog (options) {
 
     if (!options.content) {
       instance.value = false
-      instance.clear({ action: 'error', params: 'No content!' })
+      instance.clear('error', 'content is required')
     }
   })
 }
@@ -74,18 +71,23 @@ Dialog.defaultOptions = {
 
 Dialog.close = all => {
   if (queue.length) {
-    const closeParams = { action: 'close', params: null }
     if (all) {
       queue.forEach(instance => {
-        instance.clear(closeParams)
+        instance.clear('close')
       })
       queue = []
     } else if (!multiple) {
-      queue[queue.length - 1].clear(closeParams)
+      queue[queue.length - 1].clear('close')
     } else {
       const instance = queue.pop()
-      instance.clear(closeParams)
+      instance.clear('close')
     }
+  }
+}
+
+Dialog.action = (...args) => {
+  if (queue.length) {
+    queue[queue.length - 1].handleAction(...args)
   }
 }
 

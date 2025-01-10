@@ -2,6 +2,7 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <button class="btn" @click="click">按钮</button>
   </div>
 </template>
 
@@ -12,11 +13,30 @@ export default {
   name: 'App',
   components: {
     HelloWorld
+  },
+  data () {
+    return {
+      msg: '123'
+    }
+  },
+  methods: {
+    click () {
+      this.$dialog({
+        content: (
+          <HelloWorld msg={this.msg}/>
+        ),
+        params: {
+          title: '弹窗'
+        }
+      }).then((res) => {
+        console.log('res :>> ', res)
+      })
+    }
   }
 }
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -24,5 +44,10 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.dialog {
+  width: 300px;
+  height: 300px;
+  background-color: #fff;
 }
 </style>

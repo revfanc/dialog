@@ -8,6 +8,10 @@ export default {
       type: Boolean,
       default: false
     },
+    content: {
+      type: [Function, String, Object],
+      default: null
+    },
     position: {
       type: String,
       default: 'center'
@@ -56,9 +60,9 @@ export default {
       close()
     }
   },
-  render () {
+  render (h) {
     return (
-      <div>
+      <div class="dialog-container">
         <transition
           name="fade"
           onAfterEnter={() => this.$emit('opened')}
@@ -69,7 +73,7 @@ export default {
             style={{ zIndex: this.zIndex, ...this.overlayStyle }}
             vShow={this.value}
             onClick={() =>
-              this.closeOnClickOverlay && this.onAction('clickOverlay', null)
+              this.closeOnClickOverlay && this.handleAction('close', null)
             }
           ></div>
         </transition>
@@ -80,7 +84,11 @@ export default {
               vLocker
               style={{ zIndex: this.zIndex + 1 }}
             >
-              <slot {...this.$attrs} onAction={this.handleAction}></slot>
+              {
+                typeof this.content === 'function'
+                  ? h(this.content, { ...this.$attrs, ...this.$props, on: { action: this.handleAction } })
+                  : this.content
+              }
             </div>
           ) : null}
         </transition>
