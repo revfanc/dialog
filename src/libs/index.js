@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Chain from './chain'
-import DialogComponent from './Dialog.vue'
+import DialogComponent from './Dialog'
 import { removeNode } from './utils'
 
 const chain = new Chain()
