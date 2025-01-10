@@ -2,6 +2,7 @@
   "name": "dialog",
   "version": "0.1.0",
   "private": false,
+  "main": "dist/dialog.umd.min.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib --name dialog ./src/libs/index.js",
