@@ -28,6 +28,8 @@
       <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul>
+    <button @click="$emit('action', 'close', '1', 2)">1</button>
+    <button @click="$emit('action', 'confirm', '2', 2)">2</button>
   </div>
 </template>
 

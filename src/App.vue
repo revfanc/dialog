@@ -22,11 +22,9 @@ export default {
   methods: {
     click () {
       this.$dialog({
-        content: (
-          <HelloWorld msg={this.msg}/>
-        ),
-        params: {
-          title: '弹窗'
+        content: () => import('./components/HelloWorld.vue'),
+        props: {
+          msg: 'xxxxxxxxxxxxxxxx'
         }
       }).then((res) => {
         console.log('res :>> ', res)

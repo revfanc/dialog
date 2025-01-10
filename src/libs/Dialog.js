@@ -12,6 +12,10 @@ export default {
       type: [Function, String, Object],
       default: null
     },
+    props: {
+      type: [Object],
+      default: () => ({})
+    },
     position: {
       type: String,
       default: 'center'
@@ -73,7 +77,7 @@ export default {
             style={{ zIndex: this.zIndex, ...this.overlayStyle }}
             vShow={this.value}
             onClick={() =>
-              this.closeOnClickOverlay && this.handleAction('close', null)
+              this.closeOnClickOverlay && this.handleAction('close')
             }
           ></div>
         </transition>
@@ -86,7 +90,7 @@ export default {
             >
               {
                 typeof this.content === 'function'
-                  ? h(this.content, { ...this.$attrs, ...this.$props, on: { action: this.handleAction } })
+                  ? h(this.content, { props: this.props, on: { action: this.handleAction, ...this.$listeners } })
                   : this.content
               }
             </div>

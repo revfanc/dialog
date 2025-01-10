@@ -47,7 +47,11 @@ function Dialog (options) {
         })
       }
       instance.value = false
-      instance.resolve(...res, options)
+      instance.resolve({
+        action: res[0],
+        data: res[1],
+        options
+      })
     }
 
     zIndex += 10
@@ -63,9 +67,12 @@ function Dialog (options) {
 
 Dialog.defaultOptions = {
   value: true,
-  params: null,
+  content: null,
+  props: {},
   position: 'center',
-  overlayStyle: null,
+  closeOnClickOverlay: false,
+  overlayStyle: {},
+  zIndex: 999,
   beforeClose: null
 }
 
@@ -96,17 +103,9 @@ Dialog.allowMultiple = (value = true) => {
 }
 
 /**
- * 获取当前展示中的弹窗的数量
+ * 获取当前展示中的弹窗
  * @return {number}
  */
-Dialog.getCurrentCount = () => {
-  const instances = queue.filter(instance => instance?.value) || []
-
-  const length = instances.length
-
-  return length
-}
-
 Dialog.getCurrentInstances = () => {
   const instances = queue.filter(instance => instance?.value) || []
 
@@ -119,6 +118,10 @@ Dialog.alert = async options => chain.handler(Dialog, options)
 
 Dialog.resetOptions = () => {
   Dialog.currentOptions = { ...Dialog.defaultOptions }
+}
+
+Dialog.setOptions = options => {
+  Dialog.currentOptions = { ...Dialog.currentOptions, ...options }
 }
 
 Dialog.resetOptions()
