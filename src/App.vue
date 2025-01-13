@@ -22,10 +22,15 @@ export default {
   methods: {
     click () {
       this.$dialog({
-        content: () => import('./components/HelloWorld.vue'),
+        content: (
+          <div class="dialog">
+            <h1>123</h1>
+          </div>
+        ),
         props: {
           msg: 'xxxxxxxxxxxxxxxx'
-        }
+        },
+        position: 'right'
       }).then((res) => {
         console.log('res :>> ', res)
       })

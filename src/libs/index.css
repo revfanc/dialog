@@ -9,7 +9,6 @@
 }
 
 .dialog-content {
-  width: 100%;
   position: fixed;
   transform-origin: center center;
   z-index: 1000;
@@ -36,6 +35,18 @@
   top: 0;
   left: 50%;
   transform: translate3d(-50%, 0, 0);
+}
+
+.dialog-content--right {
+  top: 50%;
+  right: 0;
+  transform: translate3d(0, -50%, 0);
+}
+
+.dialog-content--left {
+  top: 50%;
+  left: 0;
+  transform: translate3d(0, -50%, 0);
 }
 
 .fade-enter-active,
@@ -79,4 +90,26 @@
 .top-leave-to {
   opacity: 0.1;
   transform: translate3d(-50%, -100%, 0);
+}
+
+.right-enter-active,
+.right-leave-active {
+  transition: all 0.3s;
+}
+
+.right-enter,
+.right-leave-to {
+  opacity: 0.1;
+  transform: translate3d(100%, -50%, 0);
+}
+
+.left-enter-active,
+.left-leave-active {
+  transition: all 0.3s;
+}
+
+.left-enter,
+.left-leave-to {
+  opacity: 0.1;
+  transform: translate3d(-100%, -50%, 0);
 }
