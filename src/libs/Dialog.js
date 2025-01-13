@@ -89,9 +89,7 @@ export default {
               style={{ zIndex: this.zIndex + 1 }}
             >
               {
-                typeof this.content === 'function'
-                  ? h(this.content, { props: this.props, on: { action: this.handleAction, ...this.$listeners } })
-                  : this.content
+                h(this.content, { props: this.props, on: { action: this.handleAction, ...this.$listeners } })
               }
             </div>
           ) : null}
