@@ -94,7 +94,7 @@ Dialog.close = all => {
 
 Dialog.action = (...args) => {
   if (queue.length) {
-    queue[queue.length - 1].handleAction(...args)
+    queue[queue.length - 1].actions(...args)
   }
 }
 

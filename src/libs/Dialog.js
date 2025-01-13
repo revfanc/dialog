@@ -48,7 +48,7 @@ export default {
     }
   },
   methods: {
-    handleAction (...args) {
+    actions (...args) {
       const [action] = args
 
       const close = (...a) => {
@@ -62,6 +62,20 @@ export default {
       }
 
       close()
+    },
+
+    generate (h) {
+      if (typeof this.content === 'function') {
+        // 检查是否是动态导入
+        const isDynamicImport = this.content.toString().includes('__webpack_require__')
+
+        if (isDynamicImport) {
+          return h(this.content, { props: this.props, on: { action: this.actions, ...this.$listeners } })
+        }
+        return this.content(h, this)
+      }
+
+      return this.content
     }
   },
   render (h) {
@@ -77,7 +91,7 @@ export default {
             style={{ zIndex: this.zIndex, ...this.overlayStyle }}
             vShow={this.value}
             onClick={() =>
-              this.closeOnClickOverlay && this.handleAction('close')
+              this.closeOnClickOverlay && this.actions('close')
             }
           ></div>
         </transition>
@@ -88,11 +102,7 @@ export default {
               vLocker
               style={{ zIndex: this.zIndex + 1 }}
             >
-              {
-                typeof this.content === 'function'
-                  ? h(this.content, { props: this.props, on: { action: this.handleAction, ...this.$listeners } })
-                  : this.content
-              }
+              {this.generate(h)}
             </div>
           ) : null}
         </transition>

@@ -22,14 +22,10 @@ export default {
   methods: {
     click () {
       this.$dialog({
-        content: (
-          <div class="dialog">
-            <h1>123</h1>
-          </div>
+        content: (h, { actions }) => (
+          <HelloWorld msg={this.msg} onAction={() => actions('confirm')}/>
         ),
-        props: {
-          msg: 'xxxxxxxxxxxxxxxx'
-        },
+        props: { msg: this.msg },
         position: 'right'
       }).then((res) => {
         console.log('res :>> ', res)
