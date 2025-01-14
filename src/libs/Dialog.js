@@ -69,8 +69,9 @@ export default {
         const isDynamicImport = this.content.toString().includes('__webpack_require__')
 
         if (isDynamicImport) {
-          return h(this.content, { props: this.props, on: { action: this.action, ...this.$listeners } })
+          return h(this.content, { props: this.props, on: { action: this.action } })
         }
+
         return this.content(h, this)
       }
 
