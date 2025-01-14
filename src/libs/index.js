@@ -8,17 +8,9 @@ let queue = []
 
 let zIndex = 999
 
-function removeNode (el) {
-  const parent = el.parentNode
+const removeNode = el => el.parentNode?.removeChild(el)
 
-  if (parent) {
-    parent.removeChild(el)
-  }
-}
-
-function isInDocument (element) {
-  return document.body.contains(element)
-}
+const isInDocument = el => document.body.contains(el)
 
 function createInstance () {
   queue = queue.filter(item => !item.$el.parentNode || isInDocument(item.$el))
@@ -36,19 +28,18 @@ function createInstance () {
 }
 
 function Dialog (options) {
-  if (typeof options !== 'object' || options === null) {
-    throw new Error('Options must be an object')
+  if (!options || typeof options !== 'object') {
+    throw new TypeError('Options must be an object')
   }
 
   if (!options.content) {
-    throw new Error('The "content" property is required in options')
+    throw new TypeError('The "content" property is required in options')
   }
 
   return new Promise((resolve, reject) => {
     const instance = createInstance()
 
-    instance.clear = (...res) => {
-      const [action, data] = res
+    instance.clear = (action, data) => {
       if (multiple) {
         instance.$on('closed', () => {
           queue = queue.filter(item => item !== instance)
@@ -58,11 +49,7 @@ function Dialog (options) {
         })
       }
       instance.value = false
-      instance.resolve({
-        action,
-        data,
-        options
-      })
+      instance.resolve({ action, data, options })
     }
 
     zIndex += 10
@@ -83,12 +70,13 @@ Dialog.defaultOptions = {
 }
 
 Dialog.close = all => {
-  if (queue.length) {
-    if (all) {
-      queue.forEach(instance => instance.clear('close'))
-    } else {
-      queue[queue.length - 1].instance.clear('close')
-    }
+  if (!queue.length) {
+    return
+  }
+  if (all) {
+    queue.forEach(instance => instance.clear('close'))
+  } else {
+    queue[queue.length - 1].instance.clear('close')
   }
 }
 
