@@ -5,12 +5,11 @@
   "main": "dist/dialog.umd.min.js",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name dialog ./src/libs/index.js",
+    "build": "vue-cli-service build --target lib --name dialog ./src/libs/index.js --report",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "core-js": "^3.6.5",
     "vue": "^2.6.11"
   },
   "devDependencies": {
@@ -21,6 +20,7 @@
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/test-utils": "^1.0.3",
     "babel-eslint": "^10.1.0",
+    "core-js": "^3.6.5",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",

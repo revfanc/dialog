@@ -108,10 +108,12 @@ Dialog.setOptions = options => {
 
 Dialog.resetOptions()
 
-export { Dialog }
+Dialog.install = Vue => {
+  Vue.prototype.$dialog = Dialog
+}
 
-export default {
-  install (Vue) {
-    Vue.prototype.$dialog = Dialog
-  }
+export default Dialog
+
+if (typeof window !== 'undefined' && window.Vue) {
+  window.Vue.use(Dialog)
 }
