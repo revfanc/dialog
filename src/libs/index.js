@@ -10,7 +10,7 @@ let queue = []
 
 let zIndex = 999
 
-const removeNode = el => el.parentNode?.removeChild(el)
+const removeNode = el => el.parentNode && el.parentNode.removeChild(el)
 
 const isInDocument = el => document.body.contains(el)
 

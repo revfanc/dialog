@@ -12,5 +12,15 @@ module.exports = {
         modules: false
       }
     }
+  },
+
+  chainWebpack: config => {
+    // 设置 target
+    config.set('target', ['web', 'es2015'])
+
+    // 优化打包
+    if (process.env.NODE_ENV === 'production') {
+      config.optimization.minimize(true)
+    }
   }
 }
