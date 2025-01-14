@@ -55,7 +55,7 @@ export default {
         this.clear(...(a.length ? a : args))
       }
 
-      if (this.beforeClose && action !== 'close') {
+      if (typeof this.beforeClose === 'function' && action !== 'close') {
         this.beforeClose(close, ...args)
         return
       }
@@ -67,11 +67,7 @@ export default {
       if (typeof this.content === 'function') {
         const isDynamicImport = this.content.toString().includes('__webpack_require__')
 
-        if (isDynamicImport) {
-          return h(this.content, { props: this.props, on: { action: this.action } })
-        }
-
-        return this.content(h, this)
+        return isDynamicImport ? h(this.content, { props: this.props, on: { action: this.action } }) : this.content(h, this)
       }
 
       return this.content
@@ -85,14 +81,13 @@ export default {
           onAfterEnter={() => this.$emit('opened')}
           onAfterLeave={() => this.$emit('closed')}
         >
-          <div
+          {this.value ? <div
             class="dialog-overlay"
             style={{ zIndex: this.zIndex, ...this.overlayStyle }}
-            vShow={this.value}
             onClick={() =>
               this.closeOnClickOverlay && this.action('close')
             }
-          ></div>
+          ></div> : null}
         </transition>
         <transition name={this.position}>
           {this.value ? (

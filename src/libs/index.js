@@ -37,10 +37,10 @@ function createInstance () {
 
 function Dialog (options) {
   if (typeof options !== 'object' || options === null) {
-    throw new TypeError('Options must be an object')
+    throw new Error('Options must be an object')
   }
 
-  if (!('content' in options)) {
+  if (!options.content) {
     throw new Error('The "content" property is required in options')
   }
 
