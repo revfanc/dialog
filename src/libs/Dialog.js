@@ -60,13 +60,17 @@ export default {
     },
 
     generate (h) {
-      if (typeof this.content === 'function') {
-        const isDynamicImport = this.content.toString().includes('__webpack_require__')
-
-        return isDynamicImport ? h(this.content, { props: this.props, on: { action: this.action } }) : this.content(h, this)
+      if (typeof this.content !== 'function') {
+        return this.content
       }
 
-      return this.content
+      const isDynamicImport = this.content.toString().includes('__webpack_require__')
+
+      if (isDynamicImport) {
+        return h(this.content, { props: this.props, on: { action: this.action } })
+      }
+
+      return this.content(h, this)
     }
   },
   render (h) {
