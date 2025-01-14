@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Chain from './chain'
 import DialogComponent from './Dialog'
-import './index.css'
+import addStyle from './style'
+
+addStyle()
 
 let multiple = true
 let queue = []

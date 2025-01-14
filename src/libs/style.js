@@ -1,4 +1,4 @@
-.dialog-overlay {
+var style = `.dialog-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -112,4 +112,15 @@
 .left-leave-to {
   opacity: 0.1;
   transform: translate3d(-100%, -50%, 0);
+}`
+
+function addStyle () {
+  if (typeof document !== 'undefined') {
+    var styleElement = document.createElement('style')
+    styleElement.type = 'text/css'
+    styleElement.appendChild(document.createTextNode(style))
+    document.head.appendChild(styleElement)
+  }
 }
+
+export default addStyle
