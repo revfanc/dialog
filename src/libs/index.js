@@ -4,7 +4,6 @@ import DialogComponent from './Dialog'
 import { removeNode } from './utils'
 import './index.css'
 
-const chain = new Chain()
 let multiple = true
 let queue = []
 
@@ -102,19 +101,13 @@ Dialog.allowMultiple = (value = true) => {
   multiple = value
 }
 
-/**
- * 获取当前展示中的弹窗
- * @return {number}
- */
-Dialog.getCurrentInstances = () => {
-  const instances = queue.filter(instance => instance?.value) || []
-
-  return instances
+Dialog.getInstances = () => {
+  return queue
 }
 
-Dialog.chain = chain
+Dialog.chain = new Chain()
 
-Dialog.alert = async options => chain.handler(Dialog, options)
+Dialog.alert = async options => Dialog.chain.handler(Dialog, options)
 
 Dialog.resetOptions = () => {
   Dialog.currentOptions = { ...Dialog.defaultOptions }
