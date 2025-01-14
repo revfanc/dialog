@@ -52,7 +52,6 @@ export default {
       const [action] = args
 
       const close = (...a) => {
-        this.$emit('input', false)
         this.clear(...(a.length ? a : args))
       }
 

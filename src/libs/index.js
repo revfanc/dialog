@@ -1,13 +1,20 @@
 import Vue from 'vue'
 import Chain from './chain'
 import DialogComponent from './Dialog'
-import { removeNode } from './utils'
 import './index.css'
 
 let multiple = true
 let queue = []
 
 let zIndex = 999
+
+function removeNode (el) {
+  const parent = el.parentNode
+
+  if (parent) {
+    parent.removeChild(el)
+  }
+}
 
 function isInDocument (element) {
   return document.body.contains(element)
@@ -21,10 +28,6 @@ function createInstance () {
       el: document.createElement('div')
     })
     document.body.appendChild(instance.$el)
-
-    instance.$on('input', value => {
-      instance.value = value
-    })
 
     queue.push(instance)
   }
