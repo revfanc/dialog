@@ -22,8 +22,8 @@ export default {
   methods: {
     click () {
       this.$dialog({
-        content: (h, { actions }) => (
-          <HelloWorld msg={this.msg} onAction={() => actions('confirm')}/>
+        content: (h, { action }) => (
+          <HelloWorld msg={this.msg} onAction={() => action('confirm')}/>
         ),
         props: { msg: this.msg },
         position: 'right'

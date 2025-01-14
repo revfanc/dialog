@@ -48,7 +48,7 @@ export default {
     }
   },
   methods: {
-    actions (...args) {
+    action (...args) {
       const [action] = args
 
       const close = (...a) => {
@@ -66,11 +66,10 @@ export default {
 
     generate (h) {
       if (typeof this.content === 'function') {
-        // 检查是否是动态导入
         const isDynamicImport = this.content.toString().includes('__webpack_require__')
 
         if (isDynamicImport) {
-          return h(this.content, { props: this.props, on: { action: this.actions, ...this.$listeners } })
+          return h(this.content, { props: this.props, on: { action: this.action, ...this.$listeners } })
         }
         return this.content(h, this)
       }
@@ -91,7 +90,7 @@ export default {
             style={{ zIndex: this.zIndex, ...this.overlayStyle }}
             vShow={this.value}
             onClick={() =>
-              this.closeOnClickOverlay && this.actions('close')
+              this.closeOnClickOverlay && this.action('close')
             }
           ></div>
         </transition>
