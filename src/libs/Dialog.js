@@ -39,12 +39,8 @@ export default {
   },
   directives: {
     locker: {
-      inserted (el) {
-        scrollLocker.lock(el)
-      },
-      unbind () {
-        scrollLocker.unlock()
-      }
+      inserted: scrollLocker.lock,
+      unbind: scrollLocker.unlock
     }
   },
   methods: {
@@ -55,7 +51,7 @@ export default {
         this.clear(...(a.length ? a : args))
       }
 
-      if (typeof this.beforeClose === 'function' && action !== 'close') {
+      if (this.beforeClose && action !== 'close') {
         this.beforeClose(close, ...args)
         return
       }
@@ -74,6 +70,7 @@ export default {
     }
   },
   render (h) {
+    const { value, zIndex, overlayStyle, closeOnClickOverlay, position } = this
     return (
       <div class="dialog-container">
         <transition
@@ -81,20 +78,20 @@ export default {
           onAfterEnter={() => this.$emit('opened')}
           onAfterLeave={() => this.$emit('closed')}
         >
-          {this.value ? <div
+          {value ? <div
             class="dialog-overlay"
-            style={{ zIndex: this.zIndex, ...this.overlayStyle }}
+            style={{ zIndex, ...overlayStyle }}
             onClick={() =>
-              this.closeOnClickOverlay && this.action('close')
+              closeOnClickOverlay && this.action('close')
             }
           ></div> : null}
         </transition>
-        <transition name={this.position}>
-          {this.value ? (
+        <transition name={position}>
+          {value ? (
             <div
-              class={['dialog-content', `dialog-content--${this.position}`]}
+              class={['dialog-content', `dialog-content--${position}`]}
               vLocker
-              style={{ zIndex: this.zIndex + 1 }}
+              style={{ zIndex: zIndex + 1 }}
             >
               {this.generate(h)}
             </div>
