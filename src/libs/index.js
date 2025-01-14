@@ -33,10 +33,19 @@ function createInstance () {
 }
 
 function Dialog (options) {
+  if (typeof options !== 'object' || options === null) {
+    throw new TypeError('Options must be an object')
+  }
+
+  if (!('content' in options)) {
+    throw new Error('The "content" property is required in options')
+  }
+
   return new Promise((resolve, reject) => {
     const instance = createInstance()
 
     instance.clear = (...res) => {
+      const [action, data] = res
       if (multiple) {
         instance.$on('closed', () => {
           queue = queue.filter(item => item !== instance)
@@ -47,8 +56,8 @@ function Dialog (options) {
       }
       instance.value = false
       instance.resolve({
-        action: res[0],
-        data: res[1],
+        action,
+        data,
         options
       })
     }
@@ -56,11 +65,6 @@ function Dialog (options) {
     zIndex += 10
 
     Object.assign(instance, Dialog.currentOptions, options, { zIndex, resolve, reject })
-
-    if (!options.content) {
-      instance.value = false
-      instance.clear('error', 'content is required')
-    }
   })
 }
 
@@ -78,15 +82,9 @@ Dialog.defaultOptions = {
 Dialog.close = all => {
   if (queue.length) {
     if (all) {
-      queue.forEach(instance => {
-        instance.clear('close')
-      })
-      queue = []
-    } else if (!multiple) {
-      queue[queue.length - 1].clear('close')
+      queue.forEach(instance => instance.clear('close'))
     } else {
-      const instance = queue.pop()
-      instance.clear('close')
+      queue[queue.length - 1].instance.clear('close')
     }
   }
 }
