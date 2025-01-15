@@ -3,29 +3,22 @@ import Chain from "./chain";
 import DialogComponent from "./Dialog";
 import "./style.css";
 
-let multiple = true;
+import { merge, removeNode, isInDocument } from "./utils";
+
 let queue = [];
-
-let zIndex = 999;
-
-const removeNode = (el) => el.parentNode && el.parentNode.removeChild(el);
-
-const isInDocument = (el) => document.body.contains(el);
 
 function createInstance() {
   queue = queue.filter(
     (item) => !item.$el.parentNode || isInDocument(item.$el)
   );
 
-  if (!queue.length || multiple) {
-    const instance = new (Vue.extend(DialogComponent))({
-      el: document.createElement("div"),
-      parent: Vue.prototype.$root,
-    });
-    document.body.appendChild(instance.$el);
+  const instance = new (Vue.extend(DialogComponent))({
+    el: document.createElement("div"),
+    parent: this,
+  });
+  document.body.appendChild(instance.$el);
 
-    queue.push(instance);
-  }
+  queue.push(instance);
 
   return queue[queue.length - 1];
 }
@@ -40,25 +33,23 @@ function Dialog(options) {
   }
 
   return new Promise((resolve, reject) => {
-    const instance = createInstance(options);
+    const instance = createInstance.call(this);
 
     instance.clear = (action, data) => {
-      if (multiple) {
-        instance.$on("closed", () => {
-          queue = queue.filter((item) => item !== instance);
+      instance.$on("closed", () => {
+        queue = queue.filter((item) => item !== instance);
 
-          removeNode(instance.$el);
-          instance.$destroy();
-        });
-      }
+        removeNode(instance.$el);
+        instance.$destroy();
+      });
+
       instance.value = false;
       instance.resolve({ action, data, options });
     };
 
-    zIndex += 10;
+    Dialog.currentOptions.zIndex += 10;
 
-    Object.assign(instance, Dialog.currentOptions, options, {
-      zIndex,
+    merge(instance, Dialog.currentOptions, options, {
       resolve,
       reject,
     });
@@ -76,7 +67,13 @@ Dialog.defaultOptions = {
   beforeClose: null,
 };
 
-Dialog.close = (all) => {
+Dialog.action = (...args) => {
+  if (queue.length) {
+    queue[queue.length - 1].action(...args);
+  }
+};
+
+Dialog.clear = (all) => {
   if (!queue.length) {
     return;
   }
@@ -87,30 +84,20 @@ Dialog.close = (all) => {
   }
 };
 
-Dialog.action = (...args) => {
-  if (queue.length) {
-    queue[queue.length - 1].action(...args);
-  }
-};
-
-Dialog.allowMultiple = (value = true) => {
-  multiple = value;
-};
-
 Dialog.getInstances = () => {
   return queue;
 };
 
 Dialog.chain = new Chain();
 
-Dialog.alert = async (options) => Dialog.chain.handler(Dialog, options);
+Dialog.alert = (options) => Dialog.chain.handler(Dialog, options);
 
 Dialog.resetOptions = () => {
-  Dialog.currentOptions = { ...Dialog.defaultOptions };
+  Dialog.currentOptions = merge({}, Dialog.defaultOptions);
 };
 
 Dialog.setOptions = (options) => {
-  Dialog.currentOptions = { ...Dialog.currentOptions, ...options };
+  Dialog.currentOptions = merge({}, Dialog.currentOptions, options);
 };
 
 Dialog.resetOptions();
