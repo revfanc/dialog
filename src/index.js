@@ -1,119 +1,126 @@
-import Vue from 'vue'
-import Chain from './chain'
-import DialogComponent from './Dialog'
-import './style.css'
+import Vue from "vue";
+import Chain from "./chain";
+import DialogComponent from "./Dialog";
+import "./style.css";
 
-let multiple = true
-let queue = []
+let multiple = true;
+let queue = [];
 
-let zIndex = 999
+let zIndex = 999;
 
-const removeNode = el => el.parentNode && el.parentNode.removeChild(el)
+const removeNode = (el) => el.parentNode && el.parentNode.removeChild(el);
 
-const isInDocument = el => document.body.contains(el)
+const isInDocument = (el) => document.body.contains(el);
 
-function createInstance () {
-  queue = queue.filter(item => !item.$el.parentNode || isInDocument(item.$el))
+function createInstance() {
+  queue = queue.filter(
+    (item) => !item.$el.parentNode || isInDocument(item.$el)
+  );
 
   if (!queue.length || multiple) {
     const instance = new (Vue.extend(DialogComponent))({
-      el: document.createElement('div')
-    })
-    document.body.appendChild(instance.$el)
+      el: document.createElement("div"),
+      parent: this,
+    });
+    document.body.appendChild(instance.$el);
 
-    queue.push(instance)
+    queue.push(instance);
   }
 
-  return queue[queue.length - 1]
+  return queue[queue.length - 1];
 }
 
-function Dialog (options) {
-  if (!options || typeof options !== 'object') {
-    throw new TypeError('Options must be an object')
+function Dialog(options) {
+  if (!options || typeof options !== "object") {
+    throw new TypeError("Options must be an object");
   }
 
   if (!options.content) {
-    throw new TypeError('The "content" property is required in options')
+    throw new TypeError('The "content" property is required in options');
   }
 
   return new Promise((resolve, reject) => {
-    const instance = createInstance()
+    const instance = createInstance.call(this, options);
 
     instance.clear = (action, data) => {
       if (multiple) {
-        instance.$on('closed', () => {
-          queue = queue.filter(item => item !== instance)
+        instance.$on("closed", () => {
+          queue = queue.filter((item) => item !== instance);
 
-          removeNode(instance.$el)
-          instance.$destroy()
-        })
+          removeNode(instance.$el);
+          instance.$destroy();
+        });
       }
-      instance.value = false
-      instance.resolve({ action, data, options })
-    }
+      instance.value = false;
+      instance.resolve({ action, data, options });
+    };
 
-    zIndex += 10
+    zIndex += 10;
 
-    Object.assign(instance, Dialog.currentOptions, options, { zIndex, resolve, reject })
-  })
+    Object.assign(instance, Dialog.currentOptions, options, {
+      zIndex,
+      resolve,
+      reject,
+    });
+  });
 }
 
 Dialog.defaultOptions = {
   value: true,
   content: null,
   props: {},
-  position: 'center',
+  position: "center",
   closeOnClickOverlay: false,
   overlayStyle: {},
   zIndex: 999,
-  beforeClose: null
-}
+  beforeClose: null,
+};
 
-Dialog.close = all => {
+Dialog.close = (all) => {
   if (!queue.length) {
-    return
+    return;
   }
   if (all) {
-    queue.forEach(instance => instance.clear('close'))
+    queue.forEach((instance) => instance.clear("close"));
   } else {
-    queue[queue.length - 1].instance.clear('close')
+    queue[queue.length - 1].instance.clear("close");
   }
-}
+};
 
 Dialog.action = (...args) => {
   if (queue.length) {
-    queue[queue.length - 1].action(...args)
+    queue[queue.length - 1].action(...args);
   }
-}
+};
 
 Dialog.allowMultiple = (value = true) => {
-  multiple = value
-}
+  multiple = value;
+};
 
 Dialog.getInstances = () => {
-  return queue
-}
+  return queue;
+};
 
-Dialog.chain = new Chain()
+Dialog.chain = new Chain();
 
-Dialog.alert = async options => Dialog.chain.handler(Dialog, options)
+Dialog.alert = async (options) => Dialog.chain.handler(Dialog, options);
 
 Dialog.resetOptions = () => {
-  Dialog.currentOptions = { ...Dialog.defaultOptions }
-}
+  Dialog.currentOptions = { ...Dialog.defaultOptions };
+};
 
-Dialog.setOptions = options => {
-  Dialog.currentOptions = { ...Dialog.currentOptions, ...options }
-}
+Dialog.setOptions = (options) => {
+  Dialog.currentOptions = { ...Dialog.currentOptions, ...options };
+};
 
-Dialog.resetOptions()
+Dialog.resetOptions();
 
-Dialog.install = Vue => {
-  Vue.prototype.$dialog = Dialog
-}
+Dialog.install = (Vue) => {
+  Vue.prototype.$dialog = Dialog;
+};
 
-export default Dialog
+export default Dialog;
 
-if (typeof window !== 'undefined' && window.Vue) {
-  window.Vue.use(Dialog)
+if (typeof window !== "undefined" && window.Vue) {
+  window.Vue.use(Dialog);
 }

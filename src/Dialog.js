@@ -73,7 +73,7 @@ export default {
     const stringContent = () => {
       return (
         <div class="dialog-content--normal">
-          <h1 domPropsInnerHTML={content}></h1>
+          <h1>{content}</h1>
           <button onClick={() => this.action("close")}>确定</button>
         </div>
       );
@@ -142,6 +142,7 @@ export default {
               style={{ zIndex: zIndex + 1 }}
             >
               {generateContent(h)}
+              {this.$slots.default}
             </div>
           ) : null}
         </transition>
