@@ -20,7 +20,7 @@ function createInstance() {
   if (!queue.length || multiple) {
     const instance = new (Vue.extend(DialogComponent))({
       el: document.createElement("div"),
-      parent: this,
+      parent: Vue.prototype.$root,
     });
     document.body.appendChild(instance.$el);
 
@@ -40,7 +40,7 @@ function Dialog(options) {
   }
 
   return new Promise((resolve, reject) => {
-    const instance = createInstance.call(this, options);
+    const instance = createInstance(options);
 
     instance.clear = (action, data) => {
       if (multiple) {
