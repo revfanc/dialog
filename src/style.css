@@ -1,4 +1,9 @@
-var style = `.dialog-overlay {
+.dialog-container {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dialog-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -16,6 +21,30 @@ var style = `.dialog-overlay {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+}
+
+.dialog-content--normal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  text-align: center;
+  min-width: 200px;
+}
+
+.dialog-content--normal h1 {
+  font-size: 16px;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.dialog-content--normal button {
+  font-size: 16px;
+  color: #fff;
+  background-color: #409eff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 10px;
+  min-width: 80px;
 }
 
 .dialog-content--center {
@@ -112,15 +141,4 @@ var style = `.dialog-overlay {
 .left-leave-to {
   opacity: 0.1;
   transform: translate3d(-100%, -50%, 0);
-}`
-
-function addStyle () {
-  if (typeof document !== 'undefined') {
-    var styleElement = document.createElement('style')
-    styleElement.type = 'text/css'
-    styleElement.appendChild(document.createTextNode(style))
-    document.head.appendChild(styleElement)
-  }
 }
-
-export default addStyle
