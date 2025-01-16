@@ -88,7 +88,7 @@ export default {
       );
     };
 
-    const generateContent = (h) => {
+    const generateContent = () => {
       if (!content) {
         return errorContent();
       }
@@ -117,7 +117,7 @@ export default {
         }
       }
 
-      return content(h, this);
+      return content(this.$createElement, this);
     };
     return (
       <div class="dialog-container">
@@ -141,7 +141,7 @@ export default {
               vLocker
               style={{ zIndex: zIndex + 1 }}
             >
-              {generateContent(h)}
+              {generateContent()}
               {this.$slots.default}
             </div>
           ) : null}
