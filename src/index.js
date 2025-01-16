@@ -37,7 +37,6 @@ function Dialog(options) {
     instance.clear = (action, data) => {
       instance.$on("closed", () => {
         queue = queue.filter((item) => item !== instance);
-
         removeNode(instance.$el);
         instance.$destroy();
       });
@@ -89,7 +88,9 @@ Dialog.getInstances = () => {
 
 Dialog.chain = new Chain();
 
-Dialog.alert = (options) => Dialog.chain.handler(Dialog, options);
+Dialog.alert = function (options) {
+  return Dialog.chain.handler(Dialog, options);
+};
 
 Dialog.resetOptions = () => {
   Dialog.currentOptions = merge({}, Dialog.defaultOptions);
