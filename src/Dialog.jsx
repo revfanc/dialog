@@ -68,27 +68,29 @@ export default {
       closeOnClickOverlay,
       overlayStyle,
       zIndex,
+      action,
     } = this;
+    const self = this;
 
-    const stringContent = () => {
+    const stringContent = function () {
       return (
         <div class="dialog-content--normal">
           <h1>{content}</h1>
-          <button onClick={() => this.action("close")}>确定</button>
+          <button onClick={() => action("close")}>确定</button>
         </div>
       );
     };
 
-    const errorContent = () => {
+    const errorContent = function () {
       return (
         <div class="dialog-content--normal">
           <h1>出错了, 获取数据失败</h1>
-          <button onClick={() => this.action("close")}>确定</button>
+          <button onClick={() => action("close")}>确定</button>
         </div>
       );
     };
 
-    const generateContent = () => {
+    const generateContent = function () {
       if (!content) {
         return errorContent();
       }
@@ -108,7 +110,7 @@ export default {
         try {
           const dynamicContent = h(content, {
             props: props,
-            on: { action: this.action },
+            on: { action: action },
           });
 
           return dynamicContent;
@@ -117,7 +119,11 @@ export default {
         }
       }
 
-      return content(h, this);
+      return content.call(
+        self.__context__ || self,
+        (self.__context__ && self.__context__.$createElement) || h,
+        self
+      );
     };
     return (
       <div class="dialog-container">
