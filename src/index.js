@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Chain from "./chain";
-import DialogComponent from "./Dialog";
+import DialogComponent from "./Dialog.jsx";
 import "./style.css";
 
 import { merge, removeNode, isInDocument } from "./utils";
@@ -12,11 +12,8 @@ function createInstance() {
     (item) => !item.$el.parentNode || isInDocument(item.$el)
   );
 
-  const context = Vue._context || Vue.prototype._context || Vue;
-
   const instance = new (Vue.extend(DialogComponent))({
     el: document.createElement("div"),
-    parent: context,
   });
   document.body.appendChild(instance.$el);
 
