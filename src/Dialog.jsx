@@ -117,7 +117,7 @@ export default {
         }
       }
 
-      return content(this.$createElement, this);
+      return content(h, this);
     };
     return (
       <div class="dialog-container">
