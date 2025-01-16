@@ -12,9 +12,11 @@ function createInstance() {
     (item) => !item.$el.parentNode || isInDocument(item.$el)
   );
 
+  const context = Vue._context || Vue.prototype._context || Vue;
+
   const instance = new (Vue.extend(DialogComponent))({
     el: document.createElement("div"),
-    parent: this,
+    parent: context,
   });
   document.body.appendChild(instance.$el);
 
@@ -33,7 +35,7 @@ function Dialog(options) {
   }
 
   return new Promise((resolve, reject) => {
-    const instance = createInstance.call(this);
+    const instance = createInstance();
 
     instance.clear = (action, data) => {
       instance.$on("closed", () => {
