@@ -2,7 +2,7 @@ export function Interceptor() {
   this.interceptors = [];
 }
 
-Interceptor.prototype.use = function use(resolved, rejected) {
+Interceptor.prototype.use = function (resolved, rejected) {
   this.interceptors.push({
     resolved,
     rejected,
@@ -10,7 +10,7 @@ Interceptor.prototype.use = function use(resolved, rejected) {
   return this.interceptors.length - 1;
 };
 
-Interceptor.prototype.forEach = function forEach(fn) {
+Interceptor.prototype.forEach = function (fn) {
   this.interceptors.forEach((interceptor) => {
     if (interceptor !== null) {
       fn(interceptor);
@@ -18,24 +18,24 @@ Interceptor.prototype.forEach = function forEach(fn) {
   });
 };
 
-Interceptor.prototype.eject = function eject(id) {
+Interceptor.prototype.eject = function (id) {
   if (this.interceptors[id]) {
     this.interceptors[id] = null;
   }
 };
 
-Interceptor.prototype.clear = function clear() {
+Interceptor.prototype.clear = function () {
   this.interceptors = [];
 };
 
-export default function Chain() {
+export default function Interceptors() {
   this.interceptors = {
     before: new Interceptor(),
     after: new Interceptor(),
   };
 }
 
-Chain.prototype.execute = function handler(fn, config = {}) {
+Interceptors.prototype.execute = function (fn, config = {}) {
   const chain = [{ resolved: fn, rejected: undefined }];
 
   this.interceptors.before.forEach((interceptor) => {

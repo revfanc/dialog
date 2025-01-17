@@ -1,5 +1,5 @@
 import Vue from "vue";
-import Chain from "./chain";
+import Interceptors from "./interceptors";
 import DialogComponent from "./Dialog.jsx";
 import "./style.css";
 
@@ -81,10 +81,10 @@ Dialog.getInstances = () => {
   return queue;
 };
 
-Dialog.chain = new Chain();
+Dialog.interceptors = new Interceptors();
 
 Dialog.alert = function (options) {
-  return Dialog.chain.execute(Dialog, options);
+  return Dialog.interceptors.execute(Dialog, options);
 };
 
 Dialog.resetOptions = () => {
