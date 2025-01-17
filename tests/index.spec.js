@@ -4,46 +4,164 @@ import Dialog from "../src/index";
 import Vue from "vue";
 
 describe("Dialog Plugin", () => {
-  let instance;
-
+  let vm = null;
   beforeEach(() => {
-    // 清理 DOM
-    document.body.innerHTML = "";
     // 安装插件
     Vue.use(Dialog);
+
+    // 创建一个 Vue 实例来获取 h 函数
+    vm = new Vue({
+      render: (h) => h("div"),
+    }).$mount();
   });
 
-  afterEach(() => {
-    // 清理实例
-    if (instance && instance.$el) {
-      document.body.removeChild(instance.$el);
-    }
-    instance = null;
-  });
+  afterEach(() => {});
 
-  describe("Dialog.alert", () => {
-    it("should show alert dialog with message", async () => {
-      const message = "Test Alert Message";
-      instance = await Dialog.alert({
+  describe("Dialog", () => {
+    it("should show dialog with text message", async () => {
+      const message = "Test Text Message";
+      Dialog({
         render: message,
       });
 
-      // 检查 DOM 中是否包含消息
-      expect(document.body.textContent).toContain(message);
-      // 检查是否添加了正确的类名
-      expect(document.querySelector(".dialog-content")).toBeTruthy();
+      // 等待300ms
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // 检查弹窗是否存在
+      expect(document.querySelector(".dialog-container")).toBeTruthy();
+
+      // 检查弹窗内容是否正确
+      expect(document.querySelector(".dialog-container h1").textContent).toBe(
+        message
+      );
+
+      // 检查弹窗是否有遮罩层
+      expect(document.querySelector(".dialog-overlay")).toBeTruthy();
+
+      // 检查弹窗是否可以关闭
+      const closeButton = document.querySelector(
+        ".dialog-content--normal button"
+      );
+      expect(closeButton).toBeTruthy();
+      closeButton.click();
+
+      // 等待300ms
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // 检查弹窗是否被移除
+      expect(document.querySelector(".dialog-container")).toBeFalsy();
     });
 
-    it("should resolve when confirmed", async () => {
-      const promise = Dialog.alert("Test");
-      instance = await promise;
+    it("should show dialog with component", async () => {
+      let result = null;
 
-      // 触发确认
-      instance.action("confirm");
-      await promise;
+      // 获取h函数
+      const h = vm.$createElement;
+      const message = h(
+        "div",
+        {
+          class: "dialog-comp",
+        },
+        [
+          h(
+            "div",
+            {
+              class: "msg",
+            },
+            "Test Component Message"
+          ),
+          h(
+            "button",
+            {
+              class: "close",
+              on: {
+                click: () => Dialog.close(true),
+              },
+            },
+            "Confirm"
+          ),
+        ]
+      );
 
-      // 检查对话框是否被移除
-      expect(document.querySelector(".dialog-content")).toBeFalsy();
+      Dialog({
+        render: message,
+      }).then((res) => {
+        result = res;
+      });
+
+      // 等待300ms
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // 检查弹窗内容是否正确
+      expect(document.querySelector(".dialog-comp .msg").textContent).toBe(
+        "Test Component Message"
+      );
+
+      // 检查弹窗是否有遮罩层
+      expect(document.querySelector(".dialog-overlay")).toBeTruthy();
+
+      // 检查弹窗是否可以关闭
+      const closeButton = document.querySelector(".dialog-comp .close");
+      expect(closeButton).toBeTruthy();
+      closeButton.click();
+
+      // 等待300ms
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // 检查弹窗是否被移除
+      expect(document.querySelector(".dialog-comp")).toBeFalsy();
+
+      // 检查结果是否正确
+      expect(result && result.action).toBe("close");
+    });
+
+    it("should show dialog with render", async () => {
+      let result = null;
+      const message = (h, { action }) => {
+        return (
+          <div class="dialog-rend">
+            <div class="msg">Test Render Message</div>
+            <button
+              class="close"
+              onClick={() => action("confirm", "我点击了确定")}
+            >
+              Confirm
+            </button>
+          </div>
+        );
+      };
+      Dialog({
+        render: message,
+      }).then((res) => {
+        result = res;
+      });
+
+      // 等待300ms
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // 检查弹窗内容是否正确
+      expect(document.querySelector(".dialog-rend .msg").textContent).toBe(
+        "Test Render Message"
+      );
+
+      // 检查弹窗是否有遮罩层
+      expect(document.querySelector(".dialog-overlay")).toBeTruthy();
+
+      // 检查弹窗是否可以关闭
+      const closeButton = document.querySelector(".dialog-rend .close");
+      expect(closeButton).toBeTruthy();
+      closeButton.click();
+
+      // 等待300ms
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // 检查弹窗是否被移除
+      expect(
+        document.querySelector(".dialog-container .dialog-rend")
+      ).toBeFalsy();
+
+      // 检查结果是否正确
+      expect(result && result.data).toBe("我点击了确定");
     });
   });
 });
