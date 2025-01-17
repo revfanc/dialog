@@ -4,8 +4,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["example/*"]
-    }
+    },
+    "types": ["jest", "node"]
   },
-  "include": ["src/**/*", "example/**/*"],
+  "include": ["src/**/*", "example/**/*", "tests/**/*"],
   "exclude": ["node_modules"]
 }
