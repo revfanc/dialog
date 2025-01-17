@@ -35,7 +35,7 @@ export default function Chain() {
   };
 }
 
-Chain.prototype.handler = function handler(fn, config = {}) {
+Chain.prototype.execute = function handler(fn, config = {}) {
   const chain = [{ resolved: fn, rejected: undefined }];
 
   this.interceptors.before.forEach((interceptor) => {

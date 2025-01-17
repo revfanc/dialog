@@ -66,13 +66,7 @@ Dialog.defaultOptions = {
   beforeClose: null,
 };
 
-Dialog.action = (...args) => {
-  if (queue.length) {
-    queue[queue.length - 1].action(...args);
-  }
-};
-
-Dialog.clear = (all) => {
+Dialog.close = (all) => {
   if (!queue.length) {
     return;
   }
@@ -90,7 +84,7 @@ Dialog.getInstances = () => {
 Dialog.chain = new Chain();
 
 Dialog.alert = function (options) {
-  return Dialog.chain.handler(Dialog, options);
+  return Dialog.chain.execute(Dialog, options);
 };
 
 Dialog.resetOptions = () => {
