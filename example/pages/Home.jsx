@@ -5,7 +5,7 @@ export default {
     showDialog() {
       try {
         const h = this.$createElement;
-        this.$dialog.alert({
+        this.$dialog({
           render: <div>111</div>,
         });
       } catch (error) {

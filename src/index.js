@@ -31,29 +31,33 @@ function Dialog(options) {
     throw new TypeError('The "render" property is required in options');
   }
 
-  return new Promise((resolve, reject) => {
-    const instance = createInstance();
+  const promise = (options) => {
+    return new Promise((resolve, reject) => {
+      const instance = createInstance();
 
-    instance.__context__ = this;
+      instance.__context__ = this;
 
-    instance.clear = (action, data) => {
-      instance.$on("closed", () => {
-        queue = queue.filter((item) => item !== instance);
-        removeNode(instance.$el);
-        instance.$destroy();
+      instance.clear = (action, data) => {
+        instance.$on("closed", () => {
+          queue = queue.filter((item) => item !== instance);
+          removeNode(instance.$el);
+          instance.$destroy();
+        });
+
+        instance.value = false;
+        instance.resolve({ action, data, options });
+      };
+
+      Dialog.currentOptions.zIndex += 10;
+
+      merge(instance, Dialog.currentOptions, options, {
+        resolve,
+        reject,
       });
-
-      instance.value = false;
-      instance.resolve({ action, data, options });
-    };
-
-    Dialog.currentOptions.zIndex += 10;
-
-    merge(instance, Dialog.currentOptions, options, {
-      resolve,
-      reject,
     });
-  });
+  };
+
+  return Dialog.interceptors.execute(promise, options);
 }
 
 Dialog.defaultOptions = {
@@ -82,10 +86,6 @@ Dialog.getInstances = () => {
 };
 
 Dialog.interceptors = new Interceptors();
-
-Dialog.alert = function (options) {
-  return Dialog.interceptors.execute(Dialog, options);
-};
 
 Dialog.resetOptions = () => {
   Dialog.currentOptions = merge({}, Dialog.defaultOptions);
