@@ -25,8 +25,8 @@ describe("Dialog Plugin", () => {
         render: message,
       });
 
-      // 等待300ms
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      // 等待渲染
+      await Vue.nextTick();
 
       // 检查弹窗是否存在
       expect(document.querySelector(".dialog-container")).toBeTruthy();
@@ -90,8 +90,8 @@ describe("Dialog Plugin", () => {
         result = res;
       });
 
-      // 等待300ms
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      // 等待渲染
+      await Vue.nextTick();
 
       // 检查弹窗内容是否正确
       expect(document.querySelector(".dialog-comp .msg").textContent).toBe(
@@ -137,8 +137,8 @@ describe("Dialog Plugin", () => {
         result = res;
       });
 
-      // 等待300ms
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      // 等待渲染
+      await Vue.nextTick();
 
       // 检查弹窗内容是否正确
       expect(document.querySelector(".dialog-rend .msg").textContent).toBe(
@@ -175,8 +175,8 @@ describe("Dialog Plugin", () => {
         result = res;
       });
 
-      // 等待300ms
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      // 等待渲染
+      await Vue.nextTick();
 
       // 检查弹窗内容是否展示错误信息
       expect(document.querySelector(".dialog-container h1").textContent).toBe(
