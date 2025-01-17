@@ -1,9 +1,10 @@
+import HelloWorld from "../components/HelloWorld.vue";
 export default {
   name: "Home",
   methods: {
     showDialog() {
       this.$dialog.alert({
-        content(h) {
+        render(h) {
           return (
             <div class="dialog">
               <h1>hello</h1>

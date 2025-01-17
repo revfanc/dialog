@@ -27,8 +27,8 @@ function Dialog(options) {
     throw new TypeError("Options must be an object");
   }
 
-  if (!options.content) {
-    throw new TypeError('The "content" property is required in options');
+  if (!options.render) {
+    throw new TypeError('The "render" property is required in options');
   }
 
   return new Promise((resolve, reject) => {
@@ -58,8 +58,7 @@ function Dialog(options) {
 
 Dialog.defaultOptions = {
   value: true,
-  content: null,
-  props: {},
+  render: null,
   position: "center",
   closeOnClickOverlay: false,
   overlayStyle: {},

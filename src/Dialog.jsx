@@ -1,4 +1,5 @@
 import { scrollLocker } from "./scrollLocker";
+import { isRenderFunction, isText, isVNode } from "./utils";
 
 export default {
   name: "DialogComponent",
@@ -8,13 +9,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    content: {
+    render: {
       type: [Function, String, Object],
       default: null,
-    },
-    props: {
-      type: [Object],
-      default: () => ({}),
     },
     position: {
       type: String,
@@ -62,8 +59,7 @@ export default {
   render(h) {
     const {
       value,
-      content,
-      props,
+      render: component,
       position,
       closeOnClickOverlay,
       overlayStyle,
@@ -72,58 +68,31 @@ export default {
     } = this;
     const self = this;
 
-    const stringContent = function () {
+    const defaultContent = function (text) {
       return (
         <div class="dialog-content--normal">
-          <h1>{content}</h1>
-          <button onClick={() => action("close")}>确定</button>
-        </div>
-      );
-    };
-
-    const errorContent = function () {
-      return (
-        <div class="dialog-content--normal">
-          <h1>出错了, 获取数据失败</h1>
+          <h1>{text}</h1>
           <button onClick={() => action("close")}>确定</button>
         </div>
       );
     };
 
     const generateContent = function () {
-      if (!content) {
-        return errorContent();
+      if (isText(component)) {
+        return defaultContent(component);
       }
 
-      if (typeof content === "string") {
-        return stringContent();
+      if (isVNode(component)) {
+        return component;
       }
 
-      if (typeof content === "object") {
-        return content;
+      if (isRenderFunction(component)) {
+        const context = self.__context__ || self;
+        const createElement = context.$createElement;
+        return component.call(context, createElement, self);
       }
 
-      const isDynamicImport =
-        content && content.toString().indexOf("__webpack_require__") > -1;
-
-      if (isDynamicImport) {
-        try {
-          const dynamicContent = h(content, {
-            props: props,
-            on: { action: action },
-          });
-
-          return dynamicContent;
-        } catch (error) {
-          return errorContent();
-        }
-      }
-
-      return content.call(
-        self.__context__ || self,
-        (self.__context__ && self.__context__.$createElement) || h,
-        self
-      );
+      return defaultContent("出错了, 获取数据失败");
     };
     return (
       <div class="dialog-container">
