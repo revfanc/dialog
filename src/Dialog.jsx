@@ -57,6 +57,7 @@ export default {
     },
   },
   render(h) {
+    const self = this;
     const {
       value,
       render: component,
@@ -65,8 +66,9 @@ export default {
       overlayStyle,
       zIndex,
       action,
-    } = this;
-    const self = this;
+    } = self;
+    const context = self.__context__ || self;
+    const createElement = context.$createElement;
 
     const defaultContent = function (text) {
       return (
@@ -87,8 +89,6 @@ export default {
       }
 
       if (isRenderFunction(component)) {
-        const context = self.__context__ || self;
-        const createElement = context.$createElement;
         return component.call(context, createElement, self);
       }
 
@@ -117,7 +117,6 @@ export default {
               style={{ zIndex: zIndex + 1 }}
             >
               {generateContent()}
-              {this.$slots.default}
             </div>
           ) : null}
         </transition>

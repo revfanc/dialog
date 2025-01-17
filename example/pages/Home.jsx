@@ -3,16 +3,14 @@ export default {
   name: "Home",
   methods: {
     showDialog() {
-      this.$dialog.alert({
-        render(h) {
-          return (
-            <div class="dialog">
-              <h1>hello</h1>
-              <HelloWorld />
-            </div>
-          );
-        },
-      });
+      try {
+        const h = this.$createElement;
+        this.$dialog.alert({
+          render: <div>111</div>,
+        });
+      } catch (error) {
+        console.log("error :>> ", error);
+      }
     },
   },
   render(h) {
