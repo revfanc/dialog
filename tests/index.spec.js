@@ -18,6 +18,7 @@ describe("Dialog Plugin", () => {
   afterEach(() => {});
 
   describe("Dialog", () => {
+    // 核心功能
     it("should show dialog with text message", async () => {
       const message = "Test Text Message";
       Dialog({
@@ -196,5 +197,6 @@ describe("Dialog Plugin", () => {
       // 检查结果是否正确
       expect(result && result.action).toBe("close");
     });
+    // 核心功能
   });
 });
