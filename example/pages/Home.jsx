@@ -4,9 +4,10 @@ export default {
   methods: {
     showDialog() {
       try {
-        const h = this.$createElement;
         this.$dialog({
-          render: <div>111</div>,
+          render() {
+            return <div>11</div>;
+          },
         });
       } catch (error) {
         console.log("error :>> ", error);

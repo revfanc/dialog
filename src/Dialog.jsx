@@ -89,10 +89,16 @@ export default {
       }
 
       if (isRenderFunction(component)) {
-        return component.call(context, createElement, self);
+        const Content = component.call(context, createElement, self);
+
+        if (!isVNode(Content)) {
+          return defaultContent("出错了, 渲染内容错误，请稍后再试！");
+        }
+
+        return Content;
       }
 
-      return defaultContent("出错了, 获取数据失败");
+      return defaultContent("出错了, 请稍后再试！");
     };
     return (
       <div class="dialog-container">

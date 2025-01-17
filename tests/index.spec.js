@@ -163,5 +163,38 @@ describe("Dialog Plugin", () => {
       // 检查结果是否正确
       expect(result && result.data).toBe("我点击了确定");
     });
+
+    it("should show dialog with error", async () => {
+      let result;
+      Dialog({
+        render() {
+          return null;
+        },
+      }).then((res) => {
+        result = res;
+      });
+
+      // 等待300ms
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // 检查弹窗内容是否展示错误信息
+      expect(document.querySelector(".dialog-container h1").textContent).toBe(
+        "出错了, 渲染内容错误，请稍后再试！"
+      );
+
+      // 检查弹窗是否可以关闭
+      const closeButton = document.querySelector(".dialog-container button");
+      expect(closeButton).toBeTruthy();
+      closeButton.click();
+
+      // 等待300ms
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // 检查弹窗是否被移除
+      expect(document.querySelector(".dialog-container h1")).toBeFalsy();
+
+      // 检查结果是否正确
+      expect(result && result.action).toBe("close");
+    });
   });
 });
