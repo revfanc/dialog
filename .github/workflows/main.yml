@@ -35,6 +35,7 @@ jobs:
       - name: Build docs
         working-directory: ./docs
         run: |
+          rm -rf .vitepress/.temp .vitepress/cache .vitepress/dist || true
           npm install
           npm run build
         
