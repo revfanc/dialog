@@ -33,20 +33,5 @@ export default {
         }
       ]
     }
-  },
-  vite: {
-    server: {
-      fs: {
-        allow: ['..']
-      }
-    },
-    build: {
-      assetsDir: 'assets',
-      rollupOptions: {
-        output: {
-          assetFileNames: 'assets/[name].[hash].[ext]'
-        }
-      }
-    }
   }
 }
