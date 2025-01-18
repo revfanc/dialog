@@ -1,4 +1,5 @@
 export default {
+  base: '/dialog/',
   title: '@revfanc/dialog',
   description: 'A Vue.js dialog component',
   themeConfig: {
@@ -31,6 +32,5 @@ export default {
         }
       ]
     }
-  },
-  base: '/dialog/'
+  }
 }
