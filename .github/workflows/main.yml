@@ -64,7 +64,7 @@ jobs:
     needs: test-and-build
     runs-on: ubuntu-latest
     # 只在发布新版本时运行
-    if: startsWith(github.ref, 'refs/tags/v')
+    # if: startsWith(github.ref, 'refs/tags/v')
     
     steps:
       - uses: actions/checkout@v4
