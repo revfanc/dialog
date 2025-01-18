@@ -31,8 +31,8 @@ jobs:
         run: npm run build
         
       - name: Build docs
+        working-directory: ./docs
         run: |
-          cd docs
           npm install
           npm run build
         
