@@ -1,0 +1,9 @@
+{
+  "name": "@revfanc/dialog-docs",
+  "private": true,
+  "devDependencies": {
+    "vue": "^3.3.0",
+    "@vue/server-renderer": "^3.3.0",
+    "vitepress": "^1.5.0"
+  }
+} 
