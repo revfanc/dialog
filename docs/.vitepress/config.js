@@ -2,6 +2,7 @@ export default {
   base: '/dialog/',
   title: '@revfanc/dialog',
   description: 'A Vue.js dialog component',
+  outDir: '../dist/docs',
   themeConfig: {
     nav: [
       { text: '指南', link: '/guide/' },
@@ -31,6 +32,13 @@ export default {
           ]
         }
       ]
+    }
+  },
+  vite: {
+    base: '/dialog/',
+    build: {
+      assetsDir: 'assets',
+      outDir: '../dist/docs'
     }
   }
 }
