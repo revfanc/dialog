@@ -1,7 +1,8 @@
 export default {
-  base: '/dialog/',
+  base: '/',
   title: '@revfanc/dialog',
   description: 'A Vue.js dialog component',
+  cleanUrls: true,
   themeConfig: {
     nav: [
       { text: '指南', link: '/guide/' },
