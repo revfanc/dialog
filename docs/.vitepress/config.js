@@ -1,5 +1,5 @@
 export default {
-  base: '/',
+  base: '/dialog/',
   title: '@revfanc/dialog',
   description: 'A Vue.js dialog component',
   cleanUrls: true,
@@ -32,6 +32,21 @@ export default {
           ]
         }
       ]
+    }
+  },
+  vite: {
+    server: {
+      fs: {
+        allow: ['..']
+      }
+    },
+    build: {
+      assetsDir: 'assets',
+      rollupOptions: {
+        output: {
+          assetFileNames: 'assets/[name].[hash].[ext]'
+        }
+      }
     }
   }
 }
