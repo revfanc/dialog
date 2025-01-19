@@ -37,7 +37,7 @@ function Dialog(options) {
 
       instance.__context__ = this;
 
-      instance.clear = (action, data) => {
+      instance.$on("action", (action, data) => {
         instance.$on("closed", () => {
           queue = queue.filter((item) => item !== instance);
           removeNode(instance.$el);
@@ -46,7 +46,7 @@ function Dialog(options) {
 
         instance.value = false;
         instance.resolve({ action, data, options });
-      };
+      });
 
       Dialog.currentOptions.zIndex += 10;
 
@@ -75,9 +75,9 @@ Dialog.close = (all) => {
     return;
   }
   if (all) {
-    queue.forEach((instance) => instance.clear("close"));
+    queue.forEach((instance) => instance.$emit("action", "close"));
   } else {
-    queue[queue.length - 1].instance.clear("close");
+    queue[queue.length - 1].$emit("action", "close");
   }
 };
 

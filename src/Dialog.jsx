@@ -45,7 +45,8 @@ export default {
       const [action] = args;
 
       const close = (...a) => {
-        this.clear(...(a.length ? a : args));
+        const params = a.length ? a : args;
+        this.$emit("action", ...params);
       };
 
       if (this.beforeClose && action !== "close") {
@@ -74,7 +75,7 @@ export default {
       return (
         <div class="dialog-content--normal">
           <h1>{text}</h1>
-          <button onClick={() => action("close")}>确定</button>
+          <button onClick={() => action("confirm")}>确定</button>
         </div>
       );
     };
@@ -111,7 +112,7 @@ export default {
             <div
               class="dialog-overlay"
               style={{ zIndex, ...overlayStyle }}
-              onClick={() => closeOnClickOverlay && this.action("close")}
+              onClick={() => closeOnClickOverlay && action("close")}
             ></div>
           ) : null}
         </transition>

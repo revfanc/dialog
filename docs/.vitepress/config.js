@@ -4,6 +4,7 @@ export default {
   description: 'A Vue.js dialog component',
   cleanUrls: true,
   themeConfig: {
+    logo: '/favicon.svg',
     nav: [
       { text: '指南', link: '/guide/' },
       { text: '配置', link: '/config/' },
