@@ -3,10 +3,10 @@ export default {
   title: '@revfanc/dialog',
   description: 'A Vue.js dialog component',
   cleanUrls: true,
+  head: [
+    ['link', { rel: 'icon', href: '/dialog/favicon.svg' }]
+  ],
   themeConfig: {
-    head: [
-      ['link', { rel: 'icon', href: '/dialog/favicon.svg' }]
-    ],
     nav: [
       { text: '指南', link: '/guide/' },
       { text: '配置', link: '/config/' },
