@@ -59,17 +59,17 @@ export default {
     async showCustomDialog() {
       try {
         const result = await this.$dialog({
-          render: h => h('div', [
+          render: (h, { action }) => h('div', [
             h('h3', '自定义标题'),
             h('p', '这是自定义内容'),
             h('button', {
-              on: { click: () => result.resolve({ action: 'confirm' }) }
+              on: { click: () => action('confirm', { name: 'revfanc' }) }
             }, '确认')
           ])
         })
         
         if (result.action === 'confirm') {
-          console.log('用户点击了确认')
+          console.log('用户点击了确认，传入的数据为：', JSON.stringify(result.data))
         }
       } catch (error) {
         console.error('对话框出错:', error)

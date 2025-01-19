@@ -42,14 +42,12 @@ export default {
   },
   methods: {
     action(...args) {
-      const [action] = args;
-
       const close = (...a) => {
         const params = a.length ? a : args;
         this.$emit("action", ...params);
       };
 
-      if (this.beforeClose && action !== "close") {
+      if (typeof this.beforeClose === "function") {
         this.beforeClose(close, ...args);
         return;
       }

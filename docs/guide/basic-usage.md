@@ -54,13 +54,14 @@ export default {
   methods: {
     showCustomDialog() {
       this.$dialog({
-        render: (h) => h('div', [
+        render: (h, { action }) => h('div', [
           h('h1', '自定义标题'),
           h('p', '这是一段自定义内容'),
           h('button', {
             on: {
               click: () => {
                 // 处理按钮点击
+                action('confirm', { name: 'revfanc' })
               }
             }
           }, '确定')

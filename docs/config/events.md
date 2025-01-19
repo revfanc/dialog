@@ -1,31 +1,5 @@
 # 事件
 
-## 对话框事件
-
-### opened
-
-对话框打开动画结束时触发。
-
-```js
-this.$dialog({
-  render: '内容'
-}).$on('opened', () => {
-  console.log('对话框已完全打开')
-})
-```
-
-### closed
-
-对话框关闭动画结束时触发。
-
-```js
-this.$dialog({
-  render: '内容'
-}).$on('closed', () => {
-  console.log('对话框已完全关闭')
-})
-```
-
 ## Promise 回调
 
 当使用 Promise 方式时，可以处理对话框的关闭结果：
