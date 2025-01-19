@@ -14,10 +14,7 @@
     "dev": "rollup -c -w",
     "build": "rollup -c",
     "serve": "vite",
-    "test": "jest",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "test": "jest"
   },
   "dependencies": {
     "vue": "^2.6.0"
