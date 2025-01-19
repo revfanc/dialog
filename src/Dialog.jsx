@@ -41,7 +41,7 @@ export default {
     },
   },
   methods: {
-    _action(...args) {
+    action(...args) {
       const [action] = args;
 
       const close = (...a) => {
@@ -66,7 +66,7 @@ export default {
       closeOnClickOverlay,
       overlayStyle,
       zIndex,
-      _action,
+      action,
     } = self;
     const context = self.__context__ || self;
     const createElement = context.$createElement;
@@ -75,7 +75,7 @@ export default {
       return (
         <div class="dialog-content--normal">
           <h1>{text}</h1>
-          <button onClick={() => _action("confirm")}>确定</button>
+          <button onClick={() => action("confirm")}>确定</button>
         </div>
       );
     };
@@ -112,7 +112,7 @@ export default {
             <div
               class="dialog-overlay"
               style={{ zIndex, ...overlayStyle }}
-              onClick={() => closeOnClickOverlay && _action("close")}
+              onClick={() => closeOnClickOverlay && action("close")}
             ></div>
           ) : null}
         </transition>
