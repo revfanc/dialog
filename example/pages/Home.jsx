@@ -5,8 +5,8 @@ export default {
     showDialog() {
       try {
         this.$dialog({
-          render() {
-            return <div>11</div>;
+          render(_, { action }) {
+            return <div onClick={() => action("confirm")}>11</div>;
           },
         });
       } catch (error) {
