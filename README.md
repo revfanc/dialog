@@ -25,13 +25,13 @@ npm install @revfanc/dialog
 </template>
 
 <script setup>
-import { useDialog } from '@revfanc/dialog'
-
-const dialog = useDialog()
+import Dialog from '@revfanc/dialog'
 
 const showDialog = () => {
-  dialog.alert('Hello World!')
-}
+  Dialog({
+    render: 'hello world',
+  });
+};
 </script>
 ```
 
