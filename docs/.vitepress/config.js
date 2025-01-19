@@ -5,7 +5,7 @@ export default {
   cleanUrls: true,
   themeConfig: {
     head: [
-      ['link', { rel: 'icon', href: '/favicon.svg' }]
+      ['link', { rel: 'icon', href: '/dialog/favicon.svg' }]
     ],
     nav: [
       { text: '指南', link: '/guide/' },
