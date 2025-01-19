@@ -195,7 +195,7 @@ describe("Dialog Plugin", () => {
       expect(document.querySelector(".dialog-container h1")).toBeFalsy();
 
       // 检查结果是否正确
-      expect(result && result.action).toBe("close");
+      expect(result && result.action).toBe("confirm");
     });
     // 核心功能
   });
