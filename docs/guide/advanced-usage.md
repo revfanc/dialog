@@ -59,6 +59,15 @@ Dialog.close(true)
 
 通过 CSS 自定义动画效果：
 
+| 类名 | 说明 |
+|------|------|
+| fade-**-** | 淡入动画 |
+| center-**-** | 中心动画 |
+| top-**-** | 顶部动画 |
+| bottom-**-** | 底部动画 |
+| left-**-** | 左侧动画 |
+| right-**-** | 右侧动画 |
+
 ```css
 /* 自定义淡入淡出动画 */
 .fade-enter-active,
@@ -72,13 +81,13 @@ Dialog.close(true)
 }
 
 /* 自定义滑动动画 */
-.slide-enter-active,
-.slide-leave-active {
+.center-enter-active,
+.center-leave-active {
   transition: transform 0.5s ease;
 }
 
-.slide-enter,
-.slide-leave-to {
+.center-enter,
+.center-leave-to {
   transform: translateY(100%);
 }
 ``` 
