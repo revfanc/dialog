@@ -7,6 +7,8 @@ import { merge, removeNode, isInDocument } from "./utils";
 
 let queue = [];
 
+const interceptors = new Interceptors();
+
 function createInstance() {
   queue = queue.filter(
     (item) => !item.$el.parentNode || isInDocument(item.$el)
@@ -42,13 +44,16 @@ function Dialog(options) {
           queue = queue.filter((item) => item !== instance);
           removeNode(instance.$el);
           instance.$destroy();
+          Dialog.currentOptions.zIndex -= 10;
         });
 
         instance.value = false;
         instance.resolve({ action, data, options });
       });
 
-      Dialog.currentOptions.zIndex += 10;
+      instance.$on("opened", () => {
+        Dialog.currentOptions.zIndex += 10;
+      });
 
       merge(instance, Dialog.currentOptions, options, {
         resolve,
@@ -57,7 +62,7 @@ function Dialog(options) {
     });
   };
 
-  return Dialog.interceptors.execute(promise, options);
+  return interceptors._execute(promise, options);
 }
 
 Dialog.defaultOptions = {
@@ -85,7 +90,7 @@ Dialog.getInstances = () => {
   return queue;
 };
 
-Dialog.interceptors = new Interceptors();
+Dialog.interceptors = interceptors;
 
 Dialog.resetOptions = () => {
   Dialog.currentOptions = merge({}, Dialog.defaultOptions);

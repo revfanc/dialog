@@ -29,20 +29,18 @@ Interceptor.prototype.clear = function () {
 };
 
 export default function Interceptors() {
-  this.interceptors = {
-    before: new Interceptor(),
-    after: new Interceptor(),
-  };
+  this.before = new Interceptor();
+  this.after = new Interceptor();
 }
 
-Interceptors.prototype.execute = function (fn, config = {}) {
+Interceptors.prototype._execute = function (fn, config = {}) {
   const chain = [{ resolved: fn, rejected: undefined }];
 
-  this.interceptors.before.forEach((interceptor) => {
+  this.before.forEach((interceptor) => {
     chain.unshift(interceptor);
   });
 
-  this.interceptors.after.forEach((interceptor) => {
+  this.after.forEach((interceptor) => {
     chain.push(interceptor);
   });
 
