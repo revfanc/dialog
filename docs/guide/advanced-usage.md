@@ -55,23 +55,6 @@ Dialog.close()
 Dialog.close(true)
 ```
 
-## 全局配置
-
-可以设置全局默认配置：
-
-```js
-Dialog.setOptions({
-  closeOnClickOverlay: true,
-  position: 'center',
-  overlayStyle: {
-    backgroundColor: 'rgba(0, 0, 0, 0.6)'
-  }
-})
-
-// 重置为默认配置
-Dialog.resetOptions()
-```
-
 ## 自定义动画
 
 通过 CSS 自定义动画效果：
