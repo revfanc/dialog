@@ -66,8 +66,6 @@ export default {
       zIndex,
       action,
     } = self;
-    const context = self.__context__ || self;
-    const createElement = context.$createElement;
 
     const defaultContent = function (text) {
       return (
@@ -88,7 +86,7 @@ export default {
       }
 
       if (isRenderFunction(component)) {
-        const Content = component.call(context, createElement, self);
+        const Content = component.call(self, h, self);
 
         if (!isVNode(Content)) {
           return defaultContent("出错了, 渲染内容错误，请稍后再试！");
