@@ -1,6 +1,6 @@
 {
   "name": "@revfanc/dialog",
-  "version": "0.1.29",
+  "version": "0.1.30",
   "private": false,
   "description": "A Vue.js dialog component",
   "author": "revfanc",
