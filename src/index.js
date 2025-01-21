@@ -7,6 +7,9 @@ import { merge, removeNode, isInDocument } from "./utils";
 
 let queue = [];
 
+let _store;
+let _router;
+
 const interceptors = new Interceptors();
 
 function createInstance() {
@@ -16,6 +19,8 @@ function createInstance() {
 
   const instance = new (Vue.extend(DialogComponent))({
     el: document.createElement("div"),
+    store: _store,
+    router: _router,
   });
   document.body.appendChild(instance.$el);
 
@@ -102,7 +107,11 @@ Dialog.setOptions = (options) => {
 
 Dialog.resetOptions();
 
-Dialog.install = (Vue) => {
+Dialog.install = (Vue, options) => {
+  const { store, router } = options || {};
+  _store = store;
+  _router = router;
+
   Vue.prototype.$dialog = Dialog;
 };
 
