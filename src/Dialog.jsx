@@ -9,6 +9,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    props: {
+      type: Object,
+      default: () => ({}),
+    },
     render: {
       type: [Function, String, Object],
       default: null,
@@ -59,6 +63,7 @@ export default {
     const self = this;
     const {
       value,
+      props,
       render: component,
       position,
       closeOnClickOverlay,
@@ -92,7 +97,7 @@ export default {
           return defaultContent("出错了, 渲染内容错误，请稍后再试！");
         }
 
-        return Content;
+        return h(Content, { ...props, on: { action } });
       }
 
       return defaultContent("出错了, 请稍后再试！");
