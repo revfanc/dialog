@@ -9,10 +9,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    props: {
-      type: Object,
-      default: () => ({}),
-    },
     render: {
       type: [Function, String, Object],
       default: null,
@@ -63,7 +59,6 @@ export default {
     const self = this;
     const {
       value,
-      props,
       render: component,
       position,
       closeOnClickOverlay,
@@ -71,6 +66,8 @@ export default {
       zIndex,
       action,
     } = self;
+    const context = self.__context__ || self;
+    const _h = context.$createElement;
 
     const defaultContent = function (text) {
       return (
@@ -91,13 +88,13 @@ export default {
       }
 
       if (isRenderFunction(component)) {
-        const Content = component.call(self, h, self);
+        const Content = component.call(context, _h, self);
 
         if (!isVNode(Content)) {
           return defaultContent("出错了, 渲染内容错误，请稍后再试！");
         }
 
-        return h(Content, { ...props, on: { action } });
+        return Content;
       }
 
       return defaultContent("出错了, 请稍后再试！");

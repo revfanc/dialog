@@ -42,6 +42,8 @@ function Dialog(options) {
     return new Promise((resolve, reject) => {
       const instance = createInstance();
 
+      instance.__context__ = this;
+
       instance.$on("action", (action, data) => {
         instance.$on("closed", () => {
           queue = queue.filter((item) => item !== instance);
