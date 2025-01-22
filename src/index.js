@@ -49,7 +49,7 @@ function Dialog(options) {
           queue = queue.filter((item) => item !== instance);
           removeNode(instance.$el);
           instance.$destroy();
-          Dialog.currentOptions.zIndex -= 10;
+          // Dialog.currentOptions.zIndex -= 10;
         });
 
         instance.value = false;
