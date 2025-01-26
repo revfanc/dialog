@@ -43,23 +43,19 @@ function Dialog(options) {
       const instance = createInstance();
       const context = this;
 
-      // 修改render函数为闭包形式
-      if (options.render) {
-        const originalRender = options.render;
-        options.render = (...args) => originalRender.call(context, ...args);
-      }
+      const originalRender = options.render;
+      options.render = (...args) => originalRender.call(context, ...args);
 
       instance.$on("action", (action, data) => {
-      instance.$on("closed", () => {
-        queue = queue.filter((item) => item !== instance);
-        removeNode(instance.$el);
-        instance.$destroy();
-        // 清理render函数引用
-        if (options.render) {
-          options.render = null;
-        }
-        // Dialog.currentOptions.zIndex -= 10;
-      });
+        instance.$on("closed", () => {
+          queue = queue.filter((item) => item !== instance);
+          removeNode(instance.$el);
+          instance.$destroy();
+
+          if (options.render) {
+            options.render = null;
+          }
+        });
 
         instance.value = false;
         instance.resolve({ action, data, options });

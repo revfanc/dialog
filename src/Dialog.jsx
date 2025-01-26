@@ -67,18 +67,14 @@ export default {
       action,
     } = self;
 
-    const defaultContent = function (text) {
-      return (
-        <div class="dialog-content--normal">
-          <h1>{text}</h1>
-          <button onClick={() => action("confirm")}>确定</button>
-        </div>
-      );
-    };
-
     const generateContent = function () {
       if (isText(component)) {
-        return defaultContent(component);
+        return (
+          <div class="dialog-content--normal">
+            <h1>{text}</h1>
+            <button onClick={() => action("confirm")}>确定</button>
+          </div>
+        );
       }
 
       if (isVNode(component)) {
@@ -89,13 +85,15 @@ export default {
         const Content = component(h, self);
 
         if (!isVNode(Content)) {
-          return defaultContent("出错了, 渲染内容错误，请稍后再试！");
+          throw new Error("render function must return a VNode");
         }
 
         return Content;
       }
 
-      return defaultContent("出错了, 请稍后再试！");
+      throw new Error(
+        "render prop must be a function or a VNode or a string"
+      )
     };
     return (
       <div class="dialog-container">
