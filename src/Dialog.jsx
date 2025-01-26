@@ -1,5 +1,5 @@
 import { scrollLocker } from "./scrollLocker";
-import { isRenderFunction, isText, isVNode } from "./utils";
+import { isFunction, isText, isVNode } from "./utils";
 
 export default {
   name: "DialogComponent",
@@ -66,8 +66,6 @@ export default {
       zIndex,
       action,
     } = self;
-    const context = self.__context__ || self;
-    const _h = context.$createElement;
 
     const defaultContent = function (text) {
       return (
@@ -87,8 +85,8 @@ export default {
         return component;
       }
 
-      if (isRenderFunction(component)) {
-        const Content = component.call(context, _h, self);
+      if (isFunction(component)) {
+        const Content = component(h, self);
 
         if (!isVNode(Content)) {
           return defaultContent("出错了, 渲染内容错误，请稍后再试！");

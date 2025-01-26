@@ -1,12 +1,14 @@
 <template>
   <div class="hello-world-container">
     <h1>hello world</h1>
+    <p>params: {{ params && params.a }}</p>
   </div>
 </template>
 
 <script>
 export default {
   name: "HelloWorld",
+  props: ["params"],
 };
 </script>
 <style scoped>
