@@ -41,10 +41,9 @@ function Dialog(options) {
   const promise = (options) => {
     return new Promise((resolve, reject) => {
       const instance = createInstance();
-      const context = this;
 
       const originalRender = options.render;
-      options.render = (...args) => originalRender.call(context, ...args);
+      options.render = (...args) => originalRender.call(this, ...args);
 
       instance.$on("action", (action, data) => {
         instance.$on("closed", () => {

@@ -6,8 +6,8 @@ export default {
   },
   methods: {
     showDialog() {
-      this.$dialog.alert({
-        content(h) {
+      this.$dialog({
+        render(h) {
           return (
             <div class="dialog">
               <h1>hello</h1>

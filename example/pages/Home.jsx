@@ -1,4 +1,6 @@
 // import HelloWorld from "../components/HelloWorld.vue";
+
+import Dialog from "../../src/index";
 export default {
   name: "Home",
   data () {
@@ -11,8 +13,8 @@ export default {
   methods: {
     showDialog() {
       try {
-        this.$dialog({
-          render(h, { action })  {
+        Dialog.call(this, {
+          render(_, { action }) {
             return <HelloWorld params={this.params} onClick={() => action("confirm")}>11</HelloWorld>;
           },
         });
