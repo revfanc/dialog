@@ -1,0 +1,1 @@
+import{_ as i,c as a,o as n,ae as l}from"./chunks/framework.Dp9ErmE5.js";const g=JSON.parse('{"title":"介绍","description":"","frontmatter":{},"headers":[],"relativePath":"guide/index.md","filePath":"guide/index.md"}'),t={name:"guide/index.md"};function h(p,s,e,k,r,d){return n(),a("div",null,s[0]||(s[0]=[l("",13)]))}const o=i(t,[["render",h]]);export{g as __pageData,o as default};
