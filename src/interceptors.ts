@@ -42,7 +42,7 @@ export default class Interceptors<T = any> {
     this.after = new Interceptor<T>()
   }
 
-  _execute(fn: (config: T) => Promise<T>, config: T = {} as T): Promise<T> {
+  execute(fn: (config: T) => Promise<T>, config: T = {} as T): Promise<T> {
     const chain: InterceptorHandler<T>[] = [{ resolved: fn, rejected: undefined }]
 
     this.before.forEach((interceptor) => {

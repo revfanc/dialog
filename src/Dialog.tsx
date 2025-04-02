@@ -1,16 +1,6 @@
-import { defineComponent, PropType, h, Transition } from 'vue'
+import { defineComponent, h, isVNode, Transition } from 'vue'
+import type { PropType } from 'vue'
 import { scrollLocker } from "./scrollLocker"
-import { isRenderFunction, isText, isVNode } from "./utils"
-
-interface DialogProps {
-  value: boolean
-  render: Function | string | object | null
-  position: string
-  closeOnClickOverlay: boolean
-  overlayStyle: Record<string, any>
-  zIndex: number
-  beforeClose: ((done: (...args: any[]) => void, ...args: any[]) => void) | null
-}
 
 export default defineComponent({
   name: "DialogComponent",
@@ -21,7 +11,7 @@ export default defineComponent({
       default: false,
     },
     render: {
-      type: [Function, String, Object] as PropType<Function | string | object | null>,
+      type: [Function, Object] as PropType<Function | string | object | null>,
       default: null,
     },
     position: {
@@ -67,33 +57,20 @@ export default defineComponent({
       close()
     }
 
-    const defaultContent = (text: string) => {
-      return h('div', { class: 'dialog-content--normal' }, [
-        h('h1', text),
-        h('button', { onClick: () => action('confirm') }, '确定')
-      ])
-    }
-
     const generateContent = () => {
-      if (isText(props.render)) {
-        return defaultContent(props.render)
+      if (!props.render) {
+        throw new Error('The "render" property is required and cannot be empty')
       }
 
       if (isVNode(props.render)) {
         return props.render
       }
 
-      if (isRenderFunction(props.render)) {
-        const Content = props.render.call(null, h, props)
-
-        if (!isVNode(Content)) {
-          return defaultContent('出错了, 渲染内容错误，请稍后再试！')
-        }
-
-        return Content
+      if (typeof props.render === 'function') {
+        return props.render()
       }
 
-      return defaultContent('出错了, 请稍后再试！')
+      return props.render
     }
 
     return () => h('div', { class: 'dialog-container' }, [

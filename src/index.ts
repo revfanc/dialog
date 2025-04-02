@@ -1,143 +1,120 @@
-import { createApp, App } from 'vue'
+import { h } from 'vue'
 import Interceptors from './interceptors'
-import DialogComponent from './Dialog'
+import RootComponent from './Dialog'
 import './style.css'
 
-import { merge, removeNode, isInDocument } from './utils'
+import { mountComponent, useState } from './utils'
 
 interface DialogOptions {
-  value?: boolean
-  render: Function | string | object
-  position?: string
+  modelValue?: boolean
+  render: Function | object | null
+  position?: 'center' | 'top' | 'bottom' | 'right' | 'left'
   closeOnClickOverlay?: boolean
-  overlayStyle?: Record<string, any>
+  overlayStyle?: Record<string, any> | null
   zIndex?: number
-  beforeClose?: (done: (...args: any[]) => void, ...args: any[]) => void
+  beforeClose?: ((close: (...args: any[]) => void, ...args: any[]) => void) | null
+}
+
+interface DialogRes {
+  action: string
+  data?: any
 }
 
 interface DialogInstance {
-  $el: HTMLElement
-  value: boolean
-  resolve: (result: { action: string; data: any; options: DialogOptions }) => void
-  reject: (error: any) => void
-  $emit: (event: string, ...args: any[]) => void
-  $destroy: () => void
-  __context__?: any
+  instance: any
+  unmount: () => void
 }
 
-let queue: DialogInstance[] = []
-let _store: any
-let _router: any
+const INIT_OPTIONS: DialogOptions = {
+  modelValue: true,
+  render: null,
+  position: 'center',
+  closeOnClickOverlay: false,
+  overlayStyle: null,
+  zIndex: 999,
+  beforeClose: null
+}
+
+
+const queue: DialogInstance[] = []
 
 const interceptors = new Interceptors()
 
 function createInstance(): DialogInstance {
-  queue = queue.filter(
-    (item) => !item.$el.parentNode || isInDocument(item.$el)
-  )
+  const Wrapper = {
+    setup() {
+      const { state } = useState();
+      return () => h(RootComponent, {
+        ...state,
+      });
+    },
+  };
 
-  const app = createApp(DialogComponent)
-  const instance = app.mount(document.createElement('div')) as DialogInstance
-  document.body.appendChild(instance.$el)
+  const component = mountComponent(Wrapper)
 
-  queue.push(instance)
+  queue.push(component)
 
   return queue[queue.length - 1]
 }
 
-function Dialog(options: DialogOptions) {
-  if (!options || typeof options !== 'object') {
-    throw new TypeError('Options must be an object')
-  }
+function useDialog(opts: DialogOptions) {
+  let currentOptions: DialogOptions = Object.assign({}, INIT_OPTIONS, opts)
 
-  if (!options.render) {
-    throw new TypeError('The "render" property is required in options')
-  }
-
-  const promise = (options: DialogOptions) => {
-    return new Promise((resolve, reject) => {
-      const instance = createInstance()
-
-      instance.__context__ = this
-
-      instance.$emit('action', (action: string, data: any) => {
-        instance.$emit('closed', () => {
-          queue = queue.filter((item) => item !== instance)
-          removeNode(instance.$el)
-          instance.$destroy()
-        })
-
-        instance.value = false
-        instance.resolve({ action, data, options })
+  const alert = (options: DialogOptions) => {
+    return interceptors.execute((options: DialogOptions) => {
+      return new Promise((resolve, reject) => {
+        try {
+          if (!options || typeof options !== 'object') {
+            throw new TypeError('Options must be an object')
+          }
+        
+          if (!options.render) {
+            throw new TypeError('The "render" property is required in options')
+          }
+        
+          const { instance, unmount } = createInstance()
+  
+          instance.open(
+            Object.assign({}, currentOptions, options, {
+              onAction: (res: DialogRes) => {
+                resolve(res)
+                unmount()
+              },
+            }),
+          );
+        } catch (error) {
+          reject(error)        
+        }
       })
-
-      instance.$emit('opened', () => {
-        Dialog.currentOptions.zIndex += 10
-      })
-
-      merge(instance, Dialog.currentOptions, options, {
-        resolve,
-        reject,
-      })
-    })
+    }, options)
   }
 
-  return interceptors._execute(promise, options)
-}
-
-Dialog.defaultOptions = {
-  value: true,
-  render: null,
-  position: 'center',
-  closeOnClickOverlay: false,
-  overlayStyle: {},
-  zIndex: 999,
-  beforeClose: null,
-}
-
-Dialog.close = (all?: boolean) => {
-  if (!queue.length) {
-    return
+  const close = (all?: boolean) => {
+    if (!queue.length) {
+      return
+    }
+    if (all) {
+      queue.forEach((item) => item.instance.$emit('action', 'close'))
+    } else {
+      queue[queue.length - 1].instance.$emit('action', 'close')
+    }
   }
-  if (all) {
-    queue.forEach((instance) => instance.$emit('action', 'close'))
-  } else {
-    queue[queue.length - 1].$emit('action', 'close')
+
+  const getInstances = () => {
+    return queue
+  }
+
+  const setOptions = (options: Partial<DialogOptions>) => {
+    currentOptions = Object.assign({}, currentOptions, options)
+  }
+
+  return {
+    alert,
+    close,
+    interceptors,
+    getInstances,
+    setOptions,
   }
 }
 
-Dialog.getInstances = () => {
-  return queue
-}
-
-Dialog.interceptors = interceptors
-
-Dialog.resetOptions = () => {
-  Dialog.currentOptions = merge({}, Dialog.defaultOptions)
-}
-
-Dialog.setOptions = (options: Partial<DialogOptions>) => {
-  Dialog.currentOptions = merge({}, Dialog.currentOptions, options)
-}
-
-Dialog.resetOptions()
-
-Dialog.install = (app: App, options?: { store?: any; router?: any }) => {
-  const { store, router } = options || {}
-  _store = store
-  _router = router
-
-  app.config.globalProperties.$dialog = Dialog
-}
-
-export default Dialog
-
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $dialog: typeof Dialog
-  }
-}
-
-if (typeof window !== 'undefined' && (window as any).Vue) {
-  ;(window as any).Vue.use(Dialog)
-} 
+export default useDialog

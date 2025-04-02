@@ -1,58 +1,56 @@
-import { VNode } from 'vue'
+import { createApp, getCurrentInstance, reactive } from 'vue';
+import type { Component } from 'vue';
 
-export function merge<T extends Record<string, any>>(target: T, ...sources: Partial<T>[]): T {
-  for (let i = 0, j = sources.length; i < j; i++) {
-    let source = sources[i] || {};
-    for (let prop in source) {
-      if (Object.prototype.hasOwnProperty.call(source, prop)) {
-        let value = source[prop];
-        if (value !== undefined) {
-          target[prop] = value;
-        }
-      }
-    }
+export function useExpose<T = Record<string, any>>(apis: T) {
+  const instance = getCurrentInstance();
+  if (instance) {
+    Object.assign(instance.proxy as object, apis);
   }
-
-  return target;
 }
 
-export const removeNode = (el: HTMLElement): void =>
-  el.parentNode && el.parentNode.removeChild(el);
+export function useState() {
+  const state = reactive<{
+    modelValue: boolean;
+    [key: string]: any;
+  }>({
+    modelValue: false,
+  });
 
-export const isInDocument = (el: HTMLElement): boolean => document.body.contains(el);
+  const toggle = (modelValue: boolean) => {
+    state.modelValue = modelValue;
+  };
 
-export function isVNode(node: any): node is VNode {
-  return (
-    node !== null &&
-    typeof node === "object" &&
-    Object.prototype.hasOwnProperty.call(node, "componentOptions")
-  );
+  const open = (props: Record<string, any>) => {
+    Object.assign(state, props);
+    toggle(true);
+  };
+
+  const close = () => toggle(false);
+
+  useExpose({ open, close, toggle });
+
+  return {
+    open,
+    close,
+    state,
+    toggle,
+  };
 }
 
-export function isText(val: any): val is string {
-  return val && typeof val === "string";
+export function mountComponent(RootComponent: Component): {
+  instance: any;
+  unmount: () => void;
+} {
+  const app = createApp(RootComponent);
+  const root = document.createElement('div');
+
+  document.body.appendChild(root);
+
+  return {
+    instance: app.mount(root),
+    unmount() {
+      app.unmount();
+      document.body.removeChild(root);
+    },
+  };
 }
-
-export function isFunction(val: any): val is Function {
-  return typeof val === "function";
-}
-
-export function isRenderFunction(fn: any): boolean {
-  if (typeof fn !== 'function') return false;
-
-  // 检查是否是 Vue 组件
-  if (fn._isVue || fn.cid) {
-    return true;
-  }
-
-  // 检查函数名是否是 render
-  if (fn.name === 'render') {
-    return true;
-  }
-
-  // 检查是否接收 h/createElement 参数
-  const fnString = fn.toString().trim();
-  return /^function\s*\(\s*(h|createElement)\s*[,)]/
-    .test(fnString) || // 普通函数
-    /^\(\s*(h|createElement)\s*[,)]/.test(fnString); // 箭头函数
-} 
