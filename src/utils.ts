@@ -1,8 +1,10 @@
-export function merge(target) {
-  for (let i = 1, j = arguments.length; i < j; i++) {
-    let source = arguments[i] || {};
+import { VNode } from 'vue'
+
+export function merge<T extends Record<string, any>>(target: T, ...sources: Partial<T>[]): T {
+  for (let i = 0, j = sources.length; i < j; i++) {
+    let source = sources[i] || {};
     for (let prop in source) {
-      if (source.hasOwnProperty(prop)) {
+      if (Object.prototype.hasOwnProperty.call(source, prop)) {
         let value = source[prop];
         if (value !== undefined) {
           target[prop] = value;
@@ -14,12 +16,12 @@ export function merge(target) {
   return target;
 }
 
-export const removeNode = (el) =>
+export const removeNode = (el: HTMLElement): void =>
   el.parentNode && el.parentNode.removeChild(el);
 
-export const isInDocument = (el) => document.body.contains(el);
+export const isInDocument = (el: HTMLElement): boolean => document.body.contains(el);
 
-export function isVNode(node) {
+export function isVNode(node: any): node is VNode {
   return (
     node !== null &&
     typeof node === "object" &&
@@ -27,15 +29,15 @@ export function isVNode(node) {
   );
 }
 
-export function isText(val) {
+export function isText(val: any): val is string {
   return val && typeof val === "string";
 }
 
-export function isFunction(val) {
+export function isFunction(val: any): val is Function {
   return typeof val === "function";
 }
 
-export function isRenderFunction(fn) {
+export function isRenderFunction(fn: any): boolean {
   if (typeof fn !== 'function') return false;
 
   // 检查是否是 Vue 组件
@@ -53,4 +55,4 @@ export function isRenderFunction(fn) {
   return /^function\s*\(\s*(h|createElement)\s*[,)]/
     .test(fnString) || // 普通函数
     /^\(\s*(h|createElement)\s*[,)]/.test(fnString); // 箭头函数
-}
+} 

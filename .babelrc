@@ -1,13 +1,9 @@
 {
   "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "targets": {
-          "node": "current"
-        }
-      }
-    ],
-    "@vue/babel-preset-jsx"
+    ["@babel/preset-env", { "targets": { "node": "current" } }],
+    "@babel/preset-typescript"
+  ],
+  "plugins": [
+    "@vue/babel-plugin-jsx"
   ]
 }
