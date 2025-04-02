@@ -15,7 +15,7 @@ interface DialogOptions {
   beforeClose?: ((close: (...args: any[]) => void, ...args: any[]) => void) | null
 }
 
-interface DialogRes {
+export interface DialogRes {
   action: string
   data?: any
 }
@@ -67,13 +67,13 @@ function useDialog(opts: DialogOptions) {
           if (!options || typeof options !== 'object') {
             throw new TypeError('Options must be an object')
           }
-        
+
           if (!options.render) {
             throw new TypeError('The "render" property is required in options')
           }
-        
+
           const { instance, unmount } = createInstance()
-  
+
           instance.open(
             Object.assign({}, currentOptions, options, {
               onAction: (res: DialogRes) => {
@@ -83,7 +83,7 @@ function useDialog(opts: DialogOptions) {
             }),
           );
         } catch (error) {
-          reject(error)        
+          reject(error)
         }
       })
     }, options)

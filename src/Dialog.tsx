@@ -1,6 +1,7 @@
 import { defineComponent, h, isVNode, Transition } from 'vue'
 import type { PropType } from 'vue'
 import { scrollLocker } from "./scrollLocker"
+import type { DialogRes } from '.'
 
 export default defineComponent({
   name: "DialogComponent",
@@ -31,7 +32,7 @@ export default defineComponent({
       default: 999,
     },
     beforeClose: {
-      type: Function as PropType<(done: (...args: any[]) => void, ...args: any[]) => void>,
+      type: Function as PropType<(done: () => void, res: DialogRes) => void>,
       default: null,
     },
   },
@@ -41,23 +42,23 @@ export default defineComponent({
       unmounted: scrollLocker.unlock,
     },
   },
-  emits: ['action', 'opened', 'closed'],
+  emits: ['action'],
   setup(props, { emit }) {
-    const action = (...args: any[]) => {
-      const close = (...a: any[]) => {
-        const params = a.length ? a : args
-        emit('action', ...params)
+    const onAction = (res: DialogRes) => {
+      const close = (r?: DialogRes) => {
+        const response = r ? r : res
+        emit('action', response)
       }
 
       if (typeof props.beforeClose === 'function') {
-        props.beforeClose(close, ...args)
+        props.beforeClose(close, res)
         return
       }
 
       close()
     }
 
-    const generateContent = () => {
+    const generateRenderContent = () => {
       if (!props.render) {
         throw new Error('The "render" property is required and cannot be empty')
       }
@@ -76,12 +77,10 @@ export default defineComponent({
     return () => h('div', { class: 'dialog-container' }, [
       h(Transition, {
         name: 'fade',
-        onAfterEnter: () => emit('opened'),
-        onAfterLeave: () => emit('closed')
       }, () => props.value ? h('div', {
         class: 'dialog-overlay',
         style: { zIndex: props.zIndex, ...props.overlayStyle },
-        onClick: () => props.closeOnClickOverlay && action('close')
+        onClick: () => props.closeOnClickOverlay && onAction({action: 'close'})
       }) : null),
       h(Transition, {
         name: props.position
@@ -89,7 +88,7 @@ export default defineComponent({
         class: ['dialog-content', `dialog-content--${props.position}`],
         vLocker: true,
         style: { zIndex: props.zIndex + 1 }
-      }, generateContent()) : null)
+      }, generateRenderContent()) : null)
     ])
   }
-}) 
+})
